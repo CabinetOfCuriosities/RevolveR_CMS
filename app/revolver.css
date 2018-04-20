@@ -1,0 +1,380 @@
+/**
+ ** Revolver :: core CSS
+ ** v.1.0.8
+ **
+ */
+
+/* drop some styles */
+html, body, 
+section, aside, 
+figure, figcaption,
+hgroup, menu, summary, 
+header, footer, nav,
+div, ul, h1, h2, h3 {
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+	font-family: Verdana;
+	display: block;
+	width: auto;
+	padding: 0;
+	margin: 0;
+}
+
+/* high light */
+::selection {
+	color: #666;
+	background: rgba(100,100,100,.3);
+}
+
+img, a {
+	background-color: transparent;
+	outline: 0;
+	border: 0;
+}
+
+a:active,
+a:hover {
+	outline: 0;
+}
+
+button, input, optgroup, select, textarea {
+	color: inherit;
+	font: inherit;
+	margin: 0;
+}
+
+input {
+	line-height: normal;
+}
+
+button {
+	overflow: visible;
+}
+
+/* define new styles for layout */
+html, body {
+	overflow-x: hidden;
+	width: 100%;
+}
+
+/* modal windows */
+#mBox {
+	box-shadow: 0 0 6px #666;
+	background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%,rgba(229,229,229,1) 100%);
+	position: fixed;
+	height: 205px;
+	z-index: 5000;
+	width: 500px;
+
+	border: 1px solid rgba(255,255,255,.5); 
+	outline: 2px dotted #fff;
+}
+
+#mBox header {
+	background: linear-gradient(45deg, rgba(179,190,173,0.7) 0%,rgba(223,229,215,0.4) 60%,rgba(252,255,244,0.2) 100%);
+	box-shadow: -2px 3px 8px 0px #999;
+	box-shadow: 0 1px 5px #999;
+	border-bottom: 2px dotted #fff;
+	cursor: pointer;
+	height: 30px;
+}
+
+#mBoxTitle {
+	font: bold 15px Verdana, sans-serif;
+	text-shadow: -1px 1px 0 #F4F4F4;
+	padding-left: 10px;
+	line-height: 28px;
+	color: #9a9b9d;
+}
+
+#mBoxClose {
+	font: bold 16px Verdana, sans-serif;
+	text-shadow: 1px 0px 0px #777;
+	text-align: center;
+	cursor: pointer;
+	color: #377f9d;
+	float: right;
+	height: 20px;
+	margin: 5px;
+	width: 22px;
+}
+
+b#mBoxClose:hover {
+	color: #9b9c9e;;
+}
+
+#mBoxContent {
+	padding: 10px 15px;
+}
+
+/* overlay */
+#overlay {
+	background: linear-gradient(45deg, rgba(252,255,244,0.2) 0%,rgba(223,229,215,0.4) 40%,rgba(179,190,173,0.7) 100%);
+	position: absolute;
+	z-index: 4000;
+	height: 100%;
+	width: 100%;
+	top: 0;
+}
+
+/* rotation */
+.rotate {
+	position: relative;
+	margin: 20px 0;
+	height: 90px;
+	width:95%;
+}
+
+.rotate div {
+	position: absolute;
+	background: #dcdcdc;
+	width: 100%;
+	height: 100%;
+}
+
+/* forms */
+form {
+	padding: 0;
+	margin: 40px 0;
+}
+
+form label,
+form fieldset {
+	display: block;
+	color: #666;
+	text-shadow: 0 1px #fff;
+	margin-bottom: 20px;
+	background: linear-gradient(45deg, rgba(179,190,173,0.7) 0%,rgba(223,229,215,0.4) 60%,rgba(252,255,244,0.2) 100%);
+	width: 95%;
+	padding: 12px 24px;
+	border: 1px solid #e2e2e2;
+	box-shadow: inset 0px 0px 5px rgba(0,0,0,.1);
+	font: normal 14px Verdana;
+}
+
+form label {
+	font: normal 13x Verdana;
+}
+
+form fieldset {
+	margin-top: 15px;
+	padding-bottom: 20px; 
+}
+
+form legend {
+	padding: 8px 11px; 
+	box-shadow: 0 0 6px #666;
+	letter-spacing: 1px;
+	background: linear-gradient(45deg, rgba(179,190,173,0.8) 0%,rgba(223,229,215,0.6) 60%,rgba(252,255,244,0.4) 100%);
+	color: #7A7A7A;
+	text-shadow: 0 1px #fff;
+	border: 1px solid rgba(255,255,255,.5); 
+	width: 20%;
+	opacity: .8;
+	transition: all 1.8s ease-in-out;
+	margin-bottom: 10px; 
+}
+
+form fieldset:hover legend {
+	width: 97%;
+	color: #d447f0;
+}
+
+form fieldset label { 
+	cursor: pointer;
+	letter-spacing: 2px;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="date"],
+form input[type="time"],
+form input[type="tel"],
+form input[type="number"],
+form input[type="url"],
+form textarea {
+	display: block;
+	margin: 8px 0;
+	width: 98%;
+	padding: 12px 8px;
+	font: normal 16px Verdana;
+	box-shadow: 0 0 6px #666;
+	letter-spacing: 2px;
+	background: linear-gradient(45deg, rgba(252,255,244,0.4) 100%, rgba(223,229,215,0.6) 60%, rgba(179,190,173,0.8) 0%);
+	color: #5f668c;;
+	text-shadow: 0 1px #fff;
+	border: 1px solid rgba(255,255,255,.5); 
+	outline: 2px dotted #fff;
+	margin-top: 10px;
+	transition: all 1s ease-in-out;
+}
+
+form textarea {
+	background: linear-gradient(to bottom, rgba(252,255,244,0.75) 0%,rgba(223,229,215,0.79) 40%,rgba(224,224,224,0.85) 100%);
+}
+
+form input:invalid {
+	color: #f00000;
+}
+
+form input[type="checkbox"],
+form input[type="radio"] {
+	margin-right: 20px; 
+}
+
+form input[type="submit"],
+form input[type="reset"],
+form input[type="button"] {
+	display: inline-block;
+	margin: 15px 20px 15px 0;
+	padding: 8px 20px;
+	font: normal 18px Verdana; 
+	background: linear-gradient(45deg, rgba(179,190,173,0.7) 0%,rgba(223,229,215,0.4) 60%,rgba(252,255,244,0.2) 100%);
+	color: #5f668c;;
+	text-shadow: 0 1px #fff;
+	border: 1px solid rgba(255,255,255,.5); 
+	box-shadow: 0 0 6px #666, inset 0px 0px 5px rgba(0,0,0,.3);
+	cursor: pointer;
+	transition: all .4s ease-in-out;
+}
+
+form input[type="submit"]:hover,
+form input[type="submit"]:active,
+form input[type="reset"]:hover,
+form input[type="reset"]:active,
+form input[type="button"]:active,
+form input[type="button"]:hover {
+	box-shadow: 0 0 16px #666, inset 0px 0px 10px rgba(0,0,0,.3);
+	color: #8c3735;
+}
+
+form input[type="submit"]:active,
+form input[type="reset"]:active,
+form input[type="button"]:active{
+	color: #8c3735;
+	position: relative;
+	top: 3px;
+	left: 3px;
+}
+
+form select {
+	min-width: 20%;
+}
+
+/* tabs */
+.tabs {
+	margin: 40px auto;
+	text-align: left;
+	width: 90%;
+}
+
+.tabs div {
+	display: none;
+    background: #dcdcdc;
+    padding: 20px 30px;
+    font: normal 16px Verdana;
+    color: #564141;
+    box-shadow: 0 0 10px #8e8d8d;
+    border: 1px dashed #fff;
+    box-shadow: 0px 10px 8px #bfbdbd;
+    width: 90%;
+    position: relative;
+    z-index: 100;
+}
+.tabs .tabactive {
+	display: block;
+    padding: 40px 20px;
+}
+
+.tabs ul {
+	text-align: center;
+}
+.tabs li {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    border: 0;
+    background: transparent;
+    text-shadow: none;
+    box-shadow: none;
+    border-radius: 10px 10px 0 0;
+    padding: 20px 30px;
+    cursor: pointer;
+    font: normal 16px Verdana;
+    padding-bottom: 20px;
+    text-shadow: 0 1px #555;
+    color: #666;
+    margin: 0 5px 0 0;
+}
+.tabs li:hover,
+.tabs .activetab {
+    border: 1px dashed #fff;
+    border-bottom: none;
+    background: linear-gradient(to bottom, rgba(191,189,189,1) 0%,rgba(220,220,220,1) 100%);
+	color: #0c840b;
+    box-shadow: 0px -10px 8px #bfbdbd;
+    position: relative;
+    z-index: 150;
+    top: 1px;
+}
+
+#hint {
+	position: absolute; 
+	padding: 3px 8px; 
+	visibility: hidden;
+	z-index: 10000;
+	box-shadow: 0 0 6px #666;
+	letter-spacing: 1px;
+	background: linear-gradient(45deg, rgba(179,190,173,0.8) 0%,rgba(223,229,215,0.6) 60%,rgba(252,255,244,0.4) 100%);
+	color: #7A7A7A;
+	text-shadow: 0 1px #fff;
+	border: 1px solid rgba(255,255,255,.5); 
+	outline: 2px dotted #fff;
+}
+
+
+#screen-position:not([value]),
+#screen-position[value] {
+  /* Reset the default appearance */
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  
+  /* Get rid of default border in Firefox. */
+  border: none;
+  background: transparent;
+}
+
+#screen-position[value]::-moz-progress-bar,
+#screen-position[value]::-webkit-progress-bar {
+  background-color: transparent;
+}
+
+#screen-position {
+  display: block; /* default: inline-block */
+  width: 100%;
+  height: 5px;
+  border: 0 none;
+  background: transparent
+}
+
+.greenProgress::-moz-progress-bar {
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(125,217,171,0.7) 32%,rgba(124,212,164,1) 38%,rgba(114,163,93,1) 100%);
+}
+
+#screen-position::-webkit-progress-bar {
+    background: transparent;
+}  
+
+.greenProgress::-webkit-progress-value {  
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(125,217,171,0.7) 32%,rgba(124,212,164,1) 38%,rgba(114,163,93,1) 100%);
+} 
+
+.yellowProgress::-webkit-progress-value {
+	background: linear-gradient(to right, rgba(254,252,234,0) 0%,rgba(241,218,54,1) 100%);
+}
+
+.yellowProgress::-moz-progress-bar {
+	background: linear-gradient(to right, rgba(254,252,234,0) 0%,rgba(241,218,54,1) 100%);
+}
