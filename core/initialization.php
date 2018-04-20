@@ -17,9 +17,11 @@ if( strlen($dbConfig) > 0 ) {
 
 
 	$dbx::query('s|field_id|asc', 'revolver__users', $STRUCT_USER);
+	$users = $dbx::$result['result'];
+	unset($dbx::$result['result']);
 
 	if( isset( $_COOKIE['usertoken']) ) {
-		foreach( $dbx::$result['result'] as $user ) {
+		foreach( $users as $user ) {
 
 			$token_explode = explode('|', $cipher::crypt('decrypt', $_COOKIE['usertoken']));
 
@@ -44,6 +46,7 @@ else {
 	define('INSTALLED', false);
 
 }
+
 
 /* Connect authorization module */
 $auth = new Auth();

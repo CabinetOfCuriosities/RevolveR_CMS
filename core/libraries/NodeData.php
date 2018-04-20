@@ -38,19 +38,109 @@ switch( ROUTE['node'] ) {
 			else {
 
 				$dbx::query('s|field_id|asc', 'revolver__nodes', $STRUCT_NODES);
+				$nodes = $dbx::$result['result'];
 
-				foreach ($dbx::$result['result'] as $node) {
-					$node_data[] = [
-						'title'     => $node['field_title'],
-						'header'    => 'HTTP/2.0 200 OK',
-						'id'	    => 'node-'. $node['field_id'],
-						'route'     => $node['field_route'],
-						'contents'  => htmlspecialchars_decode($node['field_content']),
-						'teaser'    => true,
-						'footer'    => true,
+				unset($dbx::$result['result']);
+
+				$counter = 0;
+
+				foreach ($nodes as $node) {
+
+					$node_data[$counter] = [
+						'title'       => $node['field_title'],
+						'header'      => 'HTTP/2.0 200 OK',
+						'id'	      => 'node-'. $node['field_id'],
+						'description' => $node['field_description'],
+						'route'       => $node['field_route'],
+						'contents'    => html_entity_decode(htmlspecialchars_decode($node['field_content'])),
+						'teaser'      => true,
+						'footer'      => true,
 					];
-				}
 
+					if( count(ROUTE) === 1 ) {
+
+						$node_data[$counter]['teaser'] = false;
+
+
+						if( isset( $_COOKIE['usertoken']) ) { 
+
+							$token_explode = explode('|', $cipher::crypt('decrypt', $_COOKIE['usertoken']));
+
+							if( $token_explode[2] === $node['field_user'] || ACCESS === 'Admin' ) {
+								$node_data[$counter]['footer'] = true;
+								$node_data[$counter]['editor'] = true;
+
+
+								$test_uri = explode('/', (string)$_SERVER['REQUEST_URI']);
+
+								if( $test_uri[count($test_uri) - 2] === 'edit' ) {
+
+									$node_data[$counter]['editor_mode'] = true;
+									
+									$data_1 = [];
+									$data_2 = [];
+									$data_3 = [];
+									$data_4 = [];
+									$data_5 = [];
+								
+									if( count($vars::getVars()) > 0 ) {
+										foreach ($vars::getVars() as $k) {
+
+											if( isset($k['revolver_node_edit_id']) ) {
+												$data_1['field_id']['value'] = $k['revolver_node_edit_id'];
+												$data_2['field_id']['value'] = $k['revolver_node_edit_id'];
+												$data_3['field_id']['value'] = $k['revolver_node_edit_id'];
+												$data_4['field_id']['value'] = $k['revolver_node_edit_id'];
+												$data_5['field_id']['value'] = $k['revolver_node_edit_id'];
+											}
+
+											if( isset($k['revolver_node_edit_title']) ) {
+												$data_1['field_title']['new_value'] = $k['revolver_node_edit_title'];
+												$data_1['field_title']['criterion_field'] = 'field_id';
+												$data_1['field_title']['value'] = false;
+											}
+
+											if( isset($k['revolver_node_edit_contents']) ) {
+												$data_2['field_content']['new_value'] = nl2br($k['revolver_node_edit_contents']);
+												$data_2['field_content']['criterion_field'] = 'field_id';
+												$data_1['field_content']['value'] = false;
+											}
+
+											if( isset($k['revolver_node_edit_description']) ) {
+												$data_3['field_description']['new_value'] = $k['revolver_node_edit_description'];
+												$data_3['field_description']['criterion_field'] = 'field_id';
+												$data_1['field_description']['value'] = false;
+											}
+
+											if( isset($k['revolver_node_edit_route']) ) {
+												$data_4['field_route']['new_value'] = $k['revolver_node_edit_route'];
+												$data_4['field_route']['criterion_field'] = 'field_id';
+												$data_1['field_route']['value'] = false;
+
+											}
+
+										}
+
+										$data_1['field_title']['criterion_value'] = $data_1['field_content']['criterion_value'] = $data_1['field_description']['criterion_value'] = $data_1['field_route']['criterion_value'] = $k['revolver_node_edit_id'];
+
+
+										$dbx::query('u', 'revolver__nodes', $data_1);
+										$dbx::query('u', 'revolver__nodes', $data_2);
+										$dbx::query('u', 'revolver__nodes', $data_3);
+										$dbx::query('u', 'revolver__nodes', $data_4);
+
+										header('Location: '. site_host . $data_4['field_route']['new_value']);
+
+									}
+								}
+							}
+						} 
+						else {
+							$node_data[$counter]['footer'] = false;
+						}
+
+					} $counter++;
+				}
 			}
 		}
 
@@ -290,7 +380,11 @@ switch( ROUTE['node'] ) {
 			
 			$dbx::query('s|field_id|asc', 'revolver__users', $STRUCT_USER);
 
-			foreach( $dbx::$result['result'] as $user ) {
+			$users = $dbx::$result['result'];
+
+			unset($dbx::$result['result']);
+
+			foreach( $users as $user ) {
 
 				$token_explode = explode('|', $cipher::crypt('decrypt', $_COOKIE['usertoken']));
 
@@ -329,14 +423,16 @@ switch( ROUTE['node'] ) {
 				}
 
 				$dbx::query('s|field_id|asc', 'revolver__users', $STRUCT_USER);
+				$users = $dbx::$result['result'];
+				unset($dbx::$result['result']);
 
-				foreach( $dbx::$result['result'] as $user ) {
+				foreach( $users as $user ) {
 
 					if( (string)$user['field_email'] === (string)$email ) {
 						if( (string)$user['field_password'] === (string)$pass ) {
 
 							// secure session
-							$token = $cipher::crypt('encrypt', (string)$user['field_email'] .'|'. (string)$user['field_password'] );
+							$token = $cipher::crypt('encrypt', (string)$user['field_email'] .'|'. (string)$user['field_password'] .'|'.  (string)$user['field_nickname']);
 
 							$auth::login($token);
 							
@@ -386,8 +482,10 @@ switch( ROUTE['node'] ) {
 				}
 
 				$dbx::query('s|field_id|asc', 'revolver__users', $STRUCT_USER);
+				$users = $dbx::$result['result'];
+				unset($dbx::$result['result']);
 
-				foreach( $dbx::$result['result'] as $user ) {
+				foreach( $users as $user ) {
 
 					if( (string)$user['field_email'] === (string)$recovery_email ) {
 						$recovery_password = $cipher::crypt( 'decrypt', $user['field_password'] );

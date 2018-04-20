@@ -53,7 +53,7 @@ class Node {
 		];
 
 		// set page header
-		if( (int)$node['params']['auth'] === $GLOBALS["AUTH"] ) {
+		if( (int)$node['params']['auth'] === (int)$_COOKIE['authorization'] ) {
 			$node['header']    = $main_access_levels['200']['headers'];
 			$node['canonical'] = site_host . $node['route'];
 		} 
@@ -67,7 +67,7 @@ class Node {
 		// set blockings for non admin
 		if( !empty($node['params']['isAdmin']) ) {
 
-			if( (int)USERID === 0 && $GLOBALS["AUTH"] === 1 ) {
+			if( (int)USERID === 0 && (int)$_COOKIE['authorization'] === 1 ) {
 				$node['header'] = $main_access_levels['200']['headers'];
 				$node['canonical'] = site_host . $node['route'];
 			} 
