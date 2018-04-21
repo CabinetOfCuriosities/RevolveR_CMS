@@ -32,7 +32,7 @@ switch( ROUTE['node'] ) {
 		else {
 			if( CONTENTS ) {
 
-				$node_data[] = $node::singleNode( $main_nodes );
+				//$node_data[] = $node::singleNode( $main_nodes );
 			
 			} 
 			else {
@@ -46,101 +46,215 @@ switch( ROUTE['node'] ) {
 
 				foreach ($nodes as $node) {
 
-					$node_data[$counter] = [
-						'title'       => $node['field_title'],
-						'header'      => 'HTTP/2.0 200 OK',
-						'id'	      => 'node-'. $node['field_id'],
-						'description' => $node['field_description'],
-						'route'       => $node['field_route'],
-						'contents'    => html_entity_decode(htmlspecialchars_decode($node['field_content'])),
-						'teaser'      => true,
-						'footer'      => true,
-					];
+						$node_data[$counter] = [
+							'title'       => $node['field_title'],
+							'header'      => 'HTTP/2.0 200 OK',
+							'id'	      => 'node-'. $node['field_id'],
+							'description' => $node['field_description'],
+							'route'       => $node['field_route'],
+							'contents'    => html_entity_decode(htmlspecialchars_decode($node['field_content'])),
+							'teaser'      => true,
+							'footer'      => true,
+						];
 
-					if( count(ROUTE) === 1 ) {
+						if( count(ROUTE) === 1 ) {
 
-						$node_data[$counter]['teaser'] = false;
-
-
-						if( isset( $_COOKIE['usertoken']) ) { 
-
-							$token_explode = explode('|', $cipher::crypt('decrypt', $_COOKIE['usertoken']));
-
-							if( $token_explode[2] === $node['field_user'] || ACCESS === 'Admin' ) {
-								$node_data[$counter]['footer'] = true;
-								$node_data[$counter]['editor'] = true;
+							$node_data[$counter]['teaser'] = false;
 
 
-								$test_uri = explode('/', (string)$_SERVER['REQUEST_URI']);
+							if( isset( $_COOKIE['usertoken']) ) { 
 
-								if( $test_uri[count($test_uri) - 2] === 'edit' ) {
+								$token_explode = explode('|', $cipher::crypt('decrypt', $_COOKIE['usertoken']));
 
-									$node_data[$counter]['editor_mode'] = true;
+								if( $token_explode[2] === $node['field_user'] || ACCESS === 'Admin' ) {
+									$node_data[$counter]['footer'] = true;
+									$node_data[$counter]['editor'] = true;
+
+
+									$test_uri = explode('/', (string)$_SERVER['REQUEST_URI']);
+
+									if( $test_uri[count($test_uri) - 2] === 'edit' ) {
+
+										$node_data[$counter]['editor_mode'] = true;
+										
+										$struct_1 = [];
+										$struct_2 = [];
+										$struct_3 = [];
+										$struct_4 = [];
+
+										$action = false;
 									
-									$data_1 = [];
-									$data_2 = [];
-									$data_3 = [];
-									$data_4 = [];
-									$data_5 = [];
-								
-									if( count($vars::getVars()) > 0 ) {
-										foreach ($vars::getVars() as $k) {
+										if( count($vars::getVars()) > 0 ) {
+											foreach ($vars::getVars() as $k) {
 
-											if( isset($k['revolver_node_edit_id']) ) {
-												$data_1['field_id']['value'] = $k['revolver_node_edit_id'];
-												$data_2['field_id']['value'] = $k['revolver_node_edit_id'];
-												$data_3['field_id']['value'] = $k['revolver_node_edit_id'];
-												$data_4['field_id']['value'] = $k['revolver_node_edit_id'];
-												$data_5['field_id']['value'] = $k['revolver_node_edit_id'];
+												if( isset($k['revolver_node_edit_title']) ) {
+													$struct_1['field_title']['new_value'] = $k['revolver_node_edit_title'];
+													$struct_1['field_title']['criterion_field'] = 'field_id';
+												}
+
+												if( isset($k['revolver_node_edit_contents']) ) {
+													$struct_2['field_content']['new_value'] = nl2br($k['revolver_node_edit_contents']);
+													$struct_2['field_content']['criterion_field'] = 'field_id';
+												}
+
+												if( isset($k['revolver_node_edit_description']) ) {
+													$struct_3['field_description']['new_value'] = $k['revolver_node_edit_description'];
+													$struct_3['field_description']['criterion_field'] = 'field_id';
+												}
+
+												if( isset($k['revolver_node_edit_route']) ) {
+													$struct_4['field_route']['new_value'] = $k['revolver_node_edit_route'];
+													$struct_4['field_route']['criterion_field'] = 'field_id';
+												}
+
+												if( isset($k['revolver_node_edit_delete']) ) {
+													$action = 'delete';
+												} 
+												else {
+													$action = 'update';
+												}
+
 											}
 
-											if( isset($k['revolver_node_edit_title']) ) {
-												$data_1['field_title']['new_value'] = $k['revolver_node_edit_title'];
-												$data_1['field_title']['criterion_field'] = 'field_id';
-												$data_1['field_title']['value'] = false;
-											}
+											if( $action === 'update' ) {
 
-											if( isset($k['revolver_node_edit_contents']) ) {
-												$data_2['field_content']['new_value'] = nl2br($k['revolver_node_edit_contents']);
-												$data_2['field_content']['criterion_field'] = 'field_id';
-												$data_1['field_content']['value'] = false;
-											}
+												if( $k['revolver_node_edit_id'] === $node['field_id']) {
 
-											if( isset($k['revolver_node_edit_description']) ) {
-												$data_3['field_description']['new_value'] = $k['revolver_node_edit_description'];
-												$data_3['field_description']['criterion_field'] = 'field_id';
-												$data_1['field_description']['value'] = false;
-											}
 
-											if( isset($k['revolver_node_edit_route']) ) {
-												$data_4['field_route']['new_value'] = $k['revolver_node_edit_route'];
-												$data_4['field_route']['criterion_field'] = 'field_id';
-												$data_1['field_route']['value'] = false;
+													// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
 
+													$struct_1['field_id']['value'] = $k['revolver_node_edit_id'];
+													$struct_2['field_id']['value'] = $k['revolver_node_edit_id'];
+													$struct_3['field_id']['value'] = $k['revolver_node_edit_id'];
+													$struct_4['field_id']['value'] = $k['revolver_node_edit_id'];
+
+													$struct_1['field_title']['criterion_value'] = $k['revolver_node_edit_id'];
+													$struct_2['field_content']['criterion_value'] = $k['revolver_node_edit_id'];
+													$struct_3['field_description']['criterion_value'] = $k['revolver_node_edit_id'];
+													$struct_4['field_route']['criterion_value'] = $k['revolver_node_edit_id'];
+
+													$dbx::query('u', 'revolver__nodes', $struct_1);
+													$dbx::query('u', 'revolver__nodes', $struct_2);
+													$dbx::query('u', 'revolver__nodes', $struct_3);
+													$dbx::query('u', 'revolver__nodes', $struct_4);
+
+													header('Location: '. site_host . $data_4['field_route']['new_value']);
+
+												}	
+											
+											} 
+											else {
+
+												if( count($vars::getVars()) > 0 ) {
+													foreach ($vars::getVars() as $k) {
+
+														if( $k['revolver_node_edit_id'] === $node['field_id']) {
+
+															$struct_1['field_id']['value'] = $k['revolver_node_edit_id'];
+															$struct_1['field_title']['criterion_field'] = 'field_id';
+															$struct_1['field_title']['criterion_value'] = $node['field_id'];
+
+															$dbx::query('x', 'revolver__nodes', $struct_1);
+														
+															header('Location: '. site_host );
+															
+														}
+													}
+												}
+											
 											}
 
 										}
-
-										$data_1['field_title']['criterion_value'] = $data_1['field_content']['criterion_value'] = $data_1['field_description']['criterion_value'] = $data_1['field_route']['criterion_value'] = $k['revolver_node_edit_id'];
-
-
-										$dbx::query('u', 'revolver__nodes', $data_1);
-										$dbx::query('u', 'revolver__nodes', $data_2);
-										$dbx::query('u', 'revolver__nodes', $data_3);
-										$dbx::query('u', 'revolver__nodes', $data_4);
-
-										header('Location: '. site_host . $data_4['field_route']['new_value']);
-
 									}
 								}
+							} 
+							else {
+								$node_data[$counter]['footer'] = false;
 							}
-						} 
-						else {
-							$node_data[$counter]['footer'] = false;
+						
+						} $counter++;
+					} 
+			}
+		}
+
+		break;
+
+	case '#create':
+
+		if( !isset( $_COOKIE['usertoken']) ) { 
+			header('Location: '.  site_host . '/user/login/');
+		}
+
+		if( isset( $_COOKIE['usertoken']) ) { 
+
+			$token_explode = explode('|', $cipher::crypt('decrypt', $_COOKIE['usertoken']));
+
+			if( ACCESS === 'Admin' ) {
+
+				if( count($vars::getVars()) > 0 ) {
+					foreach ($vars::getVars() as $k) { 
+
+						if( isset($k['revolver_node_edit_id']) ) {
+							$STRUCT_NODES['field_id']['value'] = 0;
 						}
 
-					} $counter++;
+						if( isset($k['revolver_node_edit_title']) ) {
+							$STRUCT_NODES['field_title']['value'] = $k['revolver_node_edit_title'];
+						}
+
+						if( isset($k['revolver_node_edit_contents']) ) {
+							$STRUCT_NODES['field_content']['value'] = nl2br($k['revolver_node_edit_contents']);
+						}
+
+						if( isset($k['revolver_node_edit_description']) ) {
+							$STRUCT_NODES['field_description']['value'] = $k['revolver_node_edit_description'];
+						}
+
+						if( isset($k['revolver_node_edit_route']) ) {
+							$STRUCT_NODES['field_route']['value'] = $k['revolver_node_edit_route'];
+						}
+					}
+				
+					$STRUCT_NODES['field_user']['value'] = $token_explode[2];
+					$STRUCT_NODES['field_time']['value'] = date('d/m/Y');
+
+					$dbx::query('i', 'revolver__nodes', $STRUCT_NODES);
+
+					header('Location: '. site_host . $STRUCT_NODES['field_route']['value']);
+
 				}
+
+				$title = 'Create Node';
+
+			 	$contents  = '';
+			 	$contents .= '<form method="post" accept-charset="utf-8" />';
+			 	$contents .= '<fieldset>';
+			 	$contents .= '<legend>New node editor:</legend>';
+			 	$contents .= '<label>Node title:';
+			 	$contents .= '<input name="revolver_node_edit_title" type="text" placeholder="Node title" />';
+			 	$contents .= '</label>';
+			 	$contents .= '<label>Node description:';
+			 	$contents .= '<input name="revolver_node_edit_description" type="text" placeholder="Node description" />';
+			 	$contents .= '</label>';
+			 	$contents .= '<label>Node route:';
+			 	$contents .= '<input name="revolver_node_edit_route" type="text" placeholder="Node address" />';
+			 	$contents .= '</label>';
+			 	$contents .= '<label>Node contents:';
+			 	$contents .= '<textarea rows="20" name="revolver_node_edit_contents" type="text" placeholder="Node contents"></textarea>';
+			 	$contents .= '</label>';
+			 	$contents .= '</fieldset>';
+			 	$contents .= '<input type="submit" value="Submit" />';
+			 	$contents .= '</form>';
+
+				$node_data[] = [
+					'title'     => $title,
+					'header'    => 'HTTP/2.0 200 OK',
+					'id'	    => 'create',
+					'route'     => '/node/create/',
+					'contents'  => $contents,
+					'teaser'    => false,
+					'footer'    => false
+				];
 			}
 		}
 
@@ -305,7 +419,7 @@ switch( ROUTE['node'] ) {
 					$dbx::query('c', 'revolver__nodes', $STRUCT_NODES);
 
 					$STRUCT_NODES['field_title']['value'] = 'Welcome your new site based on RevolveR CMS!';
-					$STRUCT_NODES['field_content']['value'] = '<p>Revolver CMS installed but no any contents yet!</p> <p><a href="/create/">Create it first!</a></p>';
+					$STRUCT_NODES['field_content']['value'] = '<p>Revolver CMS installed but no any contents yet!</p> <p><a href="/node/create/">Create it first!</a></p>';
 					$STRUCT_NODES['field_description']['value'] = 'RevolveR CMS Homepage';
 					$STRUCT_NODES['field_user']['value'] = $user_data_name;
 					$STRUCT_NODES['field_route']['value'] = '/welcome/';

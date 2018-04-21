@@ -225,7 +225,8 @@ form input[type="radio"] {
 
 form input[type="submit"],
 form input[type="reset"],
-form input[type="button"] {
+form input[type="button"],
+form button[type="submit"] {
 	display: inline-block;
 	margin: 15px 20px 15px 0;
 	padding: 8px 20px;
@@ -244,14 +245,17 @@ form input[type="submit"]:active,
 form input[type="reset"]:hover,
 form input[type="reset"]:active,
 form input[type="button"]:active,
-form input[type="button"]:hover {
+form input[type="button"]:hover,
+form button[type="submit"]:hover,
+form button[type="submit"]:active, {
 	box-shadow: 0 0 16px #666, inset 0px 0px 10px rgba(0,0,0,.3);
 	color: #8c3735;
 }
 
 form input[type="submit"]:active,
 form input[type="reset"]:active,
-form input[type="button"]:active{
+form input[type="button"]:active,
+form button[type="submit"]:active {
 	color: #8c3735;
 	position: relative;
 	top: 3px;

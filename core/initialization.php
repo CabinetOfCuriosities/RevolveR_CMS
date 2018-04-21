@@ -58,7 +58,7 @@ $auth = new Auth();
 $menu = new Menu();
 
 /* Revolver Route Init */
-$route = new Route($main_nodes);
+$route = new Route(main_nodes);
 
 /* RevolveR Node Init */
 $node = new Node();

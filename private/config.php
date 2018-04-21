@@ -26,7 +26,7 @@ $site_sidebars = [
 ];
 
 /* Main menu */
-$main_nodes = [
+define('main_nodes', [
 	'home' => [
 		'title' => 'Home',
 		'class' => 'revolver__menu-item',
@@ -35,6 +35,17 @@ $main_nodes = [
 		'id'	=> 0,
 		'param_check' => [
 			'menu' => 1,
+		]
+	],
+	'create' => [
+		'title' => 'Create node',
+		'route' => '/node/create/',
+		'node'  => '#create',
+		'id'	=> 'create',
+		'param_check' => [
+			'auth'    => 1,
+			'menu'    => 1,
+			'isAdmin' => 1
 		]
 	],
 	'user' => [
@@ -110,7 +121,7 @@ $main_nodes = [
 		'node'  => '#setup',
 		'id'	=> 'setup'
 	]
-];
+]);
 
 /* Domain globals */
 define('site_host', strtolower(explode("/", $_SERVER['SERVER_PROTOCOL'])[0]) .'://'. $_SERVER['HTTP_HOST']);

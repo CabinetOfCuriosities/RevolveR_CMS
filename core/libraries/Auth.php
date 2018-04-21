@@ -20,7 +20,7 @@ class Auth {
 
 	public static function logout() {
 		setcookie('authorization', 0, time() + 10600, '/');
-		setcookie('user_token', '', time() + 10600, '/');
+		setcookie('usertoken', '', time() + 10600, '/');
 	}
 
 }

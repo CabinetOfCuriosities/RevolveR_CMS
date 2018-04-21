@@ -13,7 +13,7 @@
 
 <!-- RevolveR :: main menu -->
 <nav class="revolver__main-menu">
-	<?php $menu::render($main_nodes, 'ul'); ?>
+	<?php $menu::render(main_nodes, 'ul'); ?>
 </nav>
 <!-- RevolveR :: #main menu -->
 
