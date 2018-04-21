@@ -40,11 +40,51 @@ if( strlen($dbConfig) > 0 ) {
 		define('ACCESS', 'none');
 	}
 
+	$passway = $_SERVER['REQUEST_URI'];
+
+	$dbx::query('s|field_id|asc', 'revolver__nodes', $STRUCT_NODES);
+
+	if( isset($dbx::$result['result']) ) {
+		foreach($dbx::$result['result'] as $node => $n) {
+
+			if( $passway === $n['field_route'] ) {			
+				if( !empty($n['field_title']) ) {
+					define('TITLE', $n['field_title']);
+				}
+
+				if( !empty($n['field_description']) ) {
+					define('DESCRIPTION', $n['field_description']);
+				}
+
+			}
+
+		}
+
+		$dbx::query('s|field_id|asc', 'revolver__settings', $STRUCT_SITE);
+
+		if( isset( $dbx::$result['result'] ) ) {
+			foreach ($dbx::$result['result'] as $k => $v) {
+
+				if( !empty($v['field_site_brand']) ) {
+					define('BRAND', $v['field_site_brand']);
+				}
+
+				if( !empty($v['field_site_title']) ) {
+					define('TITLE', $v['field_site_title']);
+				}
+
+
+				if( !empty($v['field_site_description']) ) {
+					define('DESCRIPTION', $v['field_site_description']);
+				}
+
+			}
+		}
+
+	} 
 } 
 else {
-	
 	define('INSTALLED', false);
-
 }
 
 

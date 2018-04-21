@@ -11,6 +11,30 @@
   *
   */
 
+$STRUCT_SITE = [
+	'field_id' => [
+		'type'   => 'num', // varchar
+		'auto'	 => true,
+		'length' => 255,
+		'fill'   => true,
+		'value'  => 0
+	],
+	'field_site_brand' => [
+		'type'   => 'text', // varchar
+		'length' => 255,
+		'fill'   => true
+	],
+	'field_site_title' => [
+		'type'   => 'text', // varchar
+		'length' => 255,
+		'fill'   => true
+	],
+	'field_site_description' => [
+		'type'   => 'text', // varchar
+		'length' => 255,
+		'fill'   => true
+	],
+];
 
 $STRUCT_USER = [
 	'field_id' => [

@@ -5,6 +5,18 @@
  **
  **/
 
+$site_title = !empty(TITLE) ? TITLE : $site_title;
+foreach (main_nodes as $mn => $val) {
+	if( $_SERVER['REQUEST_URI'] === $val['route'] ) {
+		if( $_SERVER['REQUEST_URI'] !== '/' ) {
+			$site_title = $val['title'];
+		}
+	} 
+}
+
+$site_name = !empty(BRAND) ? BRAND : $site_name;
+$site_description = !empty(DESCRIPTION) ? DESCRIPTION : $site_description;
+
 ?>
 
     <head>

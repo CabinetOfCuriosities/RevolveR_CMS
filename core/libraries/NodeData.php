@@ -431,6 +431,15 @@ switch( ROUTE['node'] ) {
 					$dbx::query('c', 'revolver__users', $STRUCT_USER);
 					$dbx::query('i', 'revolver__users', $STRUCT_USER);
 
+					$dbx::query('c', 'revolver__settings', $STRUCT_SITE); // create if now exist
+
+					$STRUCT_SITE['field_id']['value'] = 0;
+					$STRUCT_SITE['field_site_brand']['value'] = 'CyberX';
+					$STRUCT_SITE['field_site_title']['value'] = 'RevolveR CMS';
+					$STRUCT_SITE['field_site_description']['value'] = 'Revolver CMS homepage';
+
+					$dbx::query('i', 'revolver__settings', $STRUCT_SITE);
+
 					header('Location: '. site_host . '/setup/');
 				} 
 			}
@@ -444,15 +453,99 @@ switch( ROUTE['node'] ) {
 			header('Location: '. site_host . '/');
 		}
 
+		unset( $dbx::$result['result'] );
+
+		// test
+		/*
+
+		$dbx::query('s', 'revolver__settings', $STRUCT_SITE);
+
+		print '<pre>';
+		print_r( $dbx::$result );
+		print '</pre>';
+
+		if( !isset($dbx::$result['result']) ) {
+			$dbx::query('c', 'revolver__settings', $STRUCT_SITE); // create if now exist
+
+			$STRUCT_SITE['field_id']['value'] = 0;
+			$STRUCT_SITE['field_site_brand']['value'] = 'CyberX';
+			$STRUCT_SITE['field_site_title']['value'] = 'RevolveR CMS';
+			$STRUCT_SITE['field_site_description']['value'] = 'Revolver CMS homepage';
+
+			$dbx::query('i', 'revolver__settings', $STRUCT_SITE);
+		} 
+		*/
+
+
+		if( count($vars::getVars()) > 0 ) {		
+			foreach ($vars::getVars() as $k) {
+
+				if( isset($k['revolver_site_settings_name']) ) {
+					$logotype = $k['revolver_site_settings_name'];
+				}
+
+				if( isset($k['revolver_site_settings_homepage_title']) ) {
+					$homepage_title = $k['revolver_site_settings_homepage_title'];
+				}
+
+				if( isset($k['revolver_site_settings_homepage_description']) ) {
+					$homepage_description = $k['revolver_site_settings_homepage_description'];
+				}
+
+			}
+
+			$STRUCT_SITE_1['field_site_brand']['new_value'] = $logotype;
+			$STRUCT_SITE_2['field_site_title']['new_value'] = $homepage_title;
+			$STRUCT_SITE_3['field_site_description']['new_value'] = $homepage_description;
+
+			$STRUCT_SITE_1['field_site_brand']['criterion_field'] = 'field_id';
+			$STRUCT_SITE_2['field_site_title']['criterion_field'] = 'field_id';
+			$STRUCT_SITE_3['field_site_description']['criterion_field'] = 'field_id';
+
+			$STRUCT_SITE_1['field_site_brand']['criterion_value'] = 1;
+			$STRUCT_SITE_2['field_site_title']['criterion_value'] = 1;
+			$STRUCT_SITE_3['field_site_description']['criterion_value'] = 1;
+
+			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_1);
+			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_2);
+			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_3);
+			
+		}
+
+		$dbx::query('s|field_id|asc', 'revolver__settings', $STRUCT_SITE);
+
+		foreach ($dbx::$result['result'] as $k => $v) {
+			
+		 	$contents  = '';
+		 	$contents .= '<form method="post" accept-charset="utf-8" />';
+		 	$contents .= '<fieldset>';
+		 	$contents .= '<legend>Site settings editor:</legend>';
+		 	$contents .= '<label>Site brand(displays as logotype):';
+		 	$contents .= '<input name="revolver_site_settings_name" type="text" placeholder="site brand text" value="'. $v['field_site_brand'] .'" />';
+		 	$contents .= '</label>';
+		 	$contents .= '<label>Homepage meta &lt;title&gt;:';
+		 	$contents .= '<input name="revolver_site_settings_homepage_title" type="text" placeholder="homepage title text" value="'. $v['field_site_title'] .'" />';
+		 	$contents .= '</label>';
+		 	$contents .= '<label>Homepage meta description:';
+		 	$contents .= '<input name="revolver_site_settings_homepage_description" type="text" placeholder="homepage description text" value="'. $v['field_site_description'] .'" />';
+		 	$contents .= '</fieldset>';
+		 	$contents .= '<input type="submit" value="Submit" />';
+		 	$contents .= '</form>';
+
+			$version = 'v.0.3.0';
+			$title    = 'RevolveR CMS '. $version .' Preferences';
+
+		}
+
 		$node_data[] = [
-			'title'     => 'RevolveR CMS v.0.2 Preferences',
+			'title'     => $title,
 			'header'    => 'HTTP/2.0 200 OK',
 			'id'	    => 'preferences',
 			'route'     => '/preferences/',
-			'contents'  => '<p>This route under development now</p>',
+			'contents'  => $contents,
 			'teaser'    => false,
 			'footer'    => false,
-			'time'		=> false
+			'time'		=> date('d/m/y')
 		];
 
 		break;
@@ -680,11 +773,31 @@ switch( ROUTE['node'] ) {
 						$STRUCT_USER['field_password']['value'] = $cipher::crypt('encrypt', $user_data_password_confirm);
 						$STRUCT_USER['field_permissions']['value'] = 'User';
 
-						$dbx::query('i', 'revolver__users', $STRUCT_USER);
+						// test for user exist
+						$dbx::query('s|field_id|asc', 'revolver__users', $STRUCT_USER);
+						
+						$passed = true;
 
-						$title = 'Account Created';
-						$contents = '<p>'. $user_data_name .', welcome! Now you can <a href="/user/login" title="Account login">login</a>!</p>';		
+						foreach ($dbx::$result['result'] as $u => $v) {
+							if($v['field_email'] === $user_data_email ) {
+								$passed = false;
+							}
+						}
 
+						if( $passed ) {
+							
+							$dbx::query('i', 'revolver__users', $STRUCT_USER);
+							
+							$title = 'Account Created';
+							$contents = '<p>'. $user_data_name .', welcome! Now you can <a href="/user/login" title="Account login">login</a>!</p>';	
+						
+						} 
+						else {
+
+							$title = 'Account not created!';
+							$contents = '<p>Account with email '. $user_data_email .' already exist! <a title="Repeat registration" href="/user/register/">Try another email</a> or do <a title="Account recovery page" href="/user/recovery/">account recovery</a> if it\'s yours!</p>';
+
+						}
 					}
 				} 
 				else {

@@ -42,7 +42,6 @@ function allowRender($route) {
 					$render_node .= '<h1>'. $n['title'] .'</h1>';
 				}
 
-
 				if( $n['time'] ) {
 					$render_node .= '<time>'. $n['time'] .'</time>';
 				}
