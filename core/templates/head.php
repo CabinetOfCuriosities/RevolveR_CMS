@@ -17,6 +17,8 @@ foreach (main_nodes as $mn => $val) {
 $site_name = !empty(BRAND) ? BRAND : $site_name;
 $site_description = !empty(DESCRIPTION) ? DESCRIPTION : $site_description;
 
+$site_data = site_host . $_SERVER['REQUEST_URI'];
+
 ?>
 
     <head>
@@ -26,9 +28,11 @@ $site_description = !empty(DESCRIPTION) ? DESCRIPTION : $site_description;
 
         <title><?php print $site_title; ?> | <?php print $site_name; ?></title>
 
-        <meta name="description" content="<?php print $site_description; ?>">
-        
+        <meta name="description" content="<?php print $site_description; ?>" />
+        <meta name="host" content="<?php print $site_data ;?>" />
+
         <link rel="stylesheet" href="<?php print site_host; ?>/app/core.css" />
+
     </head>
 
 <?php 

@@ -92,11 +92,14 @@ function allowRender($route) {
 			 	$render_node .= '<input name="revolver_node_edit_route" type="text" placeholder="Node address" value="'. $n['route'] .'" />';
 			 	$render_node .= '</label>';
 			 	$render_node .= '<label>Node contents:';
-			 	$render_node .= '<textarea rows="20" name="revolver_node_edit_contents" type="text" placeholder="Node contents">'. $n['contents'] .'</textarea>';
+			 	$render_node .= '<textarea id="textarea" rows="20" name="revolver_node_edit_contents" type="text" placeholder="Node contents">'. $n['contents'] .'</textarea>';
 			 	$render_node .= '<input type="hidden" name="revolver_node_edit_id" value="'. preg_replace("/[^0-9]/", '', $n['id']) .'" readonly required />';
 			 	$render_node .= '</label>';
+			 	$render_node .= '<label>Delete node:';
+			 	$render_node .= '&nbsp;&nbsp;<input type="checkbox" name="revolver_node_edit_delete" value="delete" />';
+			 	$render_node .= '</label>';
 			 	$render_node .= '</fieldset>';
-			 	$render_node .= '<button name="revolver_node_edit_delete" value="delete" type="submit">Delete node</button><input type="submit" value="Submit" />';
+			 	$render_node .= '<input type="submit" value="Submit" />';
 			 	$render_node .= '</form>';
 			 	$render_node .= '</article>';
 

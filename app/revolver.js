@@ -284,6 +284,7 @@ const RR = {
 			let formRadiosCheckboxes = RR.dom("form input[type='radio'], form input[type='checkbox']");
 			let formTextareas = RR.dom("form textarea");
 			let formSelect = RR.dom('form select');
+			let formInputButton = RR.dom('form button[type="submit"]');
 
 			let data = new FormData(); 
 		
@@ -294,7 +295,7 @@ const RR = {
 
 			// multi string long text
 			for(let u in formTextareas) { 
-				data.append( formInputs[u].name, formInputs[u].value ); 
+				data.append( formTextareas[u].name, formTextareas[u].value ); 
 			}
 
 			// special flag's elements
@@ -317,6 +318,19 @@ const RR = {
 						data.append( name, option.value ); 
 					}
 				}
+			}
+
+			// button type submit
+			for(let y in formInputButton) {
+				$.event(formInputButton[y], 'click', function(e) {
+					
+					e.preventDefault();
+
+					data.append( formInputButton[y].name, formInputButton[y].value );
+					//console.log( 'click' );
+				
+				});
+
 			}
 
 			// perform parameterized fetch request
@@ -1724,8 +1738,6 @@ class Revolver {
 		let loader = async function() {
 
 			 	await eval('self.'+ namespace  +' = RR');
-
-			 	console.log(document.location);
 
 				// path to bootstrap css
 				RR.bootCss = '/app/revolver.css';
