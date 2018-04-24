@@ -11,7 +11,7 @@ foreach (main_nodes as $mn => $val) {
 		if( $_SERVER['REQUEST_URI'] !== '/' ) {
 			$site_title = $val['title'];
 		}
-	} 
+    } 
 }
 
 $site_name = !empty(BRAND) ? BRAND : $site_name;
@@ -23,6 +23,7 @@ $site_data = site_host . $_SERVER['REQUEST_URI'];
 
     <head>
         <meta charset="utf-8" />
+
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -30,6 +31,8 @@ $site_data = site_host . $_SERVER['REQUEST_URI'];
 
         <meta name="description" content="<?php print $site_description; ?>" />
         <meta name="host" content="<?php print $site_data ;?>" />
+
+        <link rel="canonical" type="text/css" href="<?php print $site_data; ?>" />
 
         <link rel="stylesheet" href="<?php print site_host; ?>/app/core.css" />
 
