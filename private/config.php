@@ -10,7 +10,7 @@
   *
   */
 
-error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 
 /* Domain configuration */
 $site_name = 'CyberX';     // global sitename
@@ -120,6 +120,15 @@ define('main_nodes', [
 		'route' => '/setup/',
 		'node'  => '#setup',
 		'id'	=> 'setup'
+	],
+	'lost' => [
+		'title' => 'Route not found',
+		'param_check' => [
+			'menu' => 0,
+		],
+		'route' => '/node/404/',
+		'node'  => '#404',
+		'id'    => 'lost'
 	]
 ]);
 

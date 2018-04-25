@@ -90,36 +90,28 @@ switch( ROUTE['node'] ) {
 												if( isset($k['revolver_node_edit_title']) ) {
 													$struct_1['field_title']['new_value'] = $k['revolver_node_edit_title'];
 													$struct_1['field_title']['criterion_field'] = 'field_id';
+													$node_title = $k['revolver_node_edit_title'];
 												}
 
 												if( isset($k['revolver_node_edit_contents']) ) {
 													$struct_2['field_content']['new_value'] = nl2br($k['revolver_node_edit_contents']);
 													$struct_2['field_content']['criterion_field'] = 'field_id';
+													$node_contents = nl2br($k['revolver_node_edit_contents']);
 												}
 
 												if( isset($k['revolver_node_edit_description']) ) {
 													$struct_3['field_description']['new_value'] = $k['revolver_node_edit_description'];
 													$struct_3['field_description']['criterion_field'] = 'field_id';
+													$node_description = $k['revolver_node_edit_description'];
 												}
 
 												if( isset($k['revolver_node_edit_route']) ) {
 													$struct_4['field_route']['new_value'] = $k['revolver_node_edit_route'];
 													$struct_4['field_route']['criterion_field'] = 'field_id';
+													$node_route = $k['revolver_node_edit_route'];
 												}
 
-												if( isset($k['revolver_node_edit_delete']) ) {
-													$action = 'delete';
-												} 
-												else {
-													$action = 'update';
-												}
-
-											}
-
-											if( $action === 'update' ) {
-
-												if( $k['revolver_node_edit_id'] === $node['field_id']) {
-
+												if( isset($k['revolver_node_edit_id']) ) {
 
 													// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
 
@@ -133,17 +125,78 @@ switch( ROUTE['node'] ) {
 													$struct_3['field_description']['criterion_value'] = $k['revolver_node_edit_id'];
 													$struct_4['field_route']['criterion_value'] = $k['revolver_node_edit_id'];
 
-													$dbx::query('u', 'revolver__nodes', $struct_1);
-													$dbx::query('u', 'revolver__nodes', $struct_2);
-													$dbx::query('u', 'revolver__nodes', $struct_3);
-													$dbx::query('u', 'revolver__nodes', $struct_4);
+													$node_id = $k['revolver_node_edit_id'];
 
-													header('Location: '. site_host . $data_4['field_route']['new_value']);
+												}
 
+												if( isset($k['revolver_node_edit_delete']) ) {
+													$action = 'delete';
+												} 
+												else {
+													$action = 'update';
+												}
+
+											}
+
+
+											if( $action === 'update' ) {
+
+												if( (int)$node_id === (int)$node['field_id']) {
+
+													// check route
+													$passed = true;
+
+													// check for system routes
+													foreach (main_nodes as $k => $v) {
+														if( trim($v['route']) === trim($struct_4['field_route']['new_value']) ) {
+															$passed =  false;
+														}
+													}
+
+													// check for exists contents
+													$dbx::query('s', 'revolver__nodes', $STRUCT_NODES);
+													foreach ($dbx::$result['result'] as $k => $v) {	
+														if( trim( $v['field_route'] ) === trim($struct_4['field_route']['new_value']) ) {
+															
+															// if same node id allow update
+															if( $v['field_id'] === $node_id ) {
+																$passed = true;
+															} 
+															else {
+																$passed = false;
+															}
+														}
+													}
+
+													// check for route is correct
+													$route_fix = ltrim(rtrim($struct_4['field_route']['new_value'], "/"), "/");
+													$route_fix_check = explode('/', $route_fix);
+
+													foreach ($route_fix_check as $k) {
+														if( strlen($k) <= 0) {
+															$passed = false;
+														} 
+													}
+
+													$struct_4['field_route']['new_value'] = '/'. $route_fix .'/';
+
+
+													if( $passed ) {
+
+														$dbx::query('u', 'revolver__nodes', $struct_1);
+														$dbx::query('u', 'revolver__nodes', $struct_2);
+														$dbx::query('u', 'revolver__nodes', $struct_3);
+														$dbx::query('u', 'revolver__nodes', $struct_4);
+														header('Location: '. site_host . $struct_4['field_route']['new_value']);
+
+													} 
+													else {
+														$node_data[$counter]['warning'] = '<p class="revolver__warning">Defined route exist. Please change other route.</p>';
+													}
 												}	
 											
 											} 
-											else {
+											else if( $action === 'delete' ) {
 
 												if( count($vars::getVars()) > 0 ) {
 													foreach ($vars::getVars() as $k) {
@@ -218,15 +271,54 @@ switch( ROUTE['node'] ) {
 					$STRUCT_NODES['field_user']['value'] = $token_explode[2];
 					$STRUCT_NODES['field_time']['value'] = date('d/m/Y');
 
-					$dbx::query('i', 'revolver__nodes', $STRUCT_NODES);
 
-					header('Location: '. site_host . $STRUCT_NODES['field_route']['value']);
+					// check route
+					$passed = true;
+
+					// check for system routes
+					foreach (main_nodes as $k => $v) {
+						if( trim($v['route']) === trim($STRUCT_NODES['field_route']['value']) ) {
+							$passed =  false;
+						}
+					}
+
+					// check for exists contents
+					$dbx::query('s', 'revolver__nodes', $STRUCT_NODES);
+					foreach ($dbx::$result['result'] as $k => $v) {	
+						if( trim( $v['field_route'] ) === trim($STRUCT_NODES['field_route']['value']) ) {
+							$passed = false;
+						}
+					}
+
+					// check for route is correct
+					$route_fix = ltrim(rtrim($STRUCT_NODES['field_route']['value'], "/"), "/");
+					$route_fix_check = explode('/', $route_fix);
+
+					foreach ($route_fix_check as $k) {
+						if( strlen($k) <= 0) {
+							$passed = false;
+						} 
+					}
+
+					$STRUCT_NODES['field_route']['value'] = '/'. $route_fix .'/';
+
+
+					if( $passed ) {
+
+						$dbx::query('i', 'revolver__nodes', $STRUCT_NODES);
+						header('Location: '. site_host . $STRUCT_NODES['field_route']['value']);
+					
+					} 
+					else {
+						
+						$contents = '<p class="revolver__warning">Carefully check route path! It need to be accessible with pattern <i>/way/way/</i>.</p>';
+					}
+
 
 				}
 
 				$title = 'Create Node';
 
-			 	$contents  = '';
 			 	$contents .= '<form method="post" accept-charset="utf-8" />';
 			 	$contents .= '<fieldset>';
 			 	$contents .= '<legend>New node editor:</legend>';
@@ -439,6 +531,32 @@ switch( ROUTE['node'] ) {
 					$STRUCT_SITE['field_site_description']['value'] = 'Revolver CMS homepage';
 
 					$dbx::query('i', 'revolver__settings', $STRUCT_SITE);
+
+
+					// Access files fix
+					chmod('/robots.txt', 644);
+					chmod('/index.php', 644);
+					chmod('/private/config.php', 644);
+					chmod('/core/struct/DataBase.php', 644);
+					chmod('/core/libraries/DBX.php', 644);
+					chmod('/core/libraries/Cipher.php', 644);
+					chmod('/core/libraries/Auth.php', 644);
+					chmod('/core/libraries/Menu.php', 644);
+					chmod('/core/libraries/Route.php', 644);
+					chmod('/core/libraries/Node.php', 644);
+					chmod('/core/libraries/Variables.php', 644);
+					chmod('/core/libraries/Mail.php', 644);
+
+					chmod('/app', 755);
+					chmod('/core', 755);
+					chmod('/core/struct', 755);
+					chmod('/core/templates', 755);
+					chmod('/core/libraries', 755);
+
+					chmod('/private', 755);
+					chmod('/private/config.php', 644);
+					chmod('/private/db_config.ini', 755);
+
 
 					header('Location: '. site_host . '/setup/');
 				} 
@@ -818,6 +936,23 @@ switch( ROUTE['node'] ) {
 			'time'		=> false
 		];
 		
+		break;
+
+		case '#404':
+
+			$title = 'Route not found.';
+			$contents = '<p>Route you want to render not found.</p>';
+
+			$node_data[0] = [
+				'title'     => $title,
+				'id'	    => 'lost',
+				'route'     => '/node/404/',
+				'contents'  => $contents,
+				'teaser'    => false,
+				'footer'    => false,
+				'time'		=> false
+			];
+
 		break;
 
 }

@@ -19,7 +19,7 @@ require_once('./core/libraries/Variables.php');
 require_once('./core/libraries/Mail.php');
 
 // Init Core
-require_once('./core/initialization.php');
+require_once('./core/core.php');
 
 // Site render
 require_once('./core/templates/index.php');

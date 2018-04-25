@@ -1,0 +1,19 @@
+User-agent: *
+
+# main nodes
+Disallow: /node/create/
+Disallow: /user/
+Disallow: /user/login/
+Disallow: /user/register/
+Disallow: /user/recovery/
+Disallow: /preferences/
+Disallow: /logout/
+Disallow: /setup/
+Disallow: /node/404/
+
+# main directories
+Disallow: /core/
+Disallow: /core/libararies/
+Disallow: /core/templates/
+Disallow: /core/struct/
+Disallow: /private/

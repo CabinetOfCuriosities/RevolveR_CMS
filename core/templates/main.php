@@ -80,6 +80,9 @@ function allowRender($route) {
 				$render_node .= '<h1>'. $n['title'] .' :: Edit</h1>';
 				$render_node .= '</header>';
 			 	$render_node .= '<form method="post" accept-charset="utf-8" />';
+			if( isset($n['warning']) ) {
+				$render_node .= $n['warning'];
+			}
 			 	$render_node .= '<fieldset>';
 			 	$render_node .= '<legend>#'. $n['id'] .' Editor:</legend>';
 			 	$render_node .= '<label>Node title:';
