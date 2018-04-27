@@ -21,7 +21,7 @@ function allowRender($route) {
 <!-- RevolveR :: main -->
 <section class="revolver__main-contents">
 
-<?php $render_node = ''; foreach ($node_data as $n) { 
+<?php $counter = 0; $render_node = ''; foreach ($node_data as $n) { 
 
 		if( !$n['editor_mode'] ) { // Render Node
 
@@ -120,7 +120,7 @@ function allowRender($route) {
 		else { 
 
 			// Render node edit
-			if( $_SERVER['REQUEST_URI'] === $n['route'] . 'edit/' ) {
+			if( $_SERVER['REQUEST_URI'] === $n['route'] . 'edit/') {
 
 			 	$render_node  = '';
 			 	$render_node .= '<article class="revolver__article article-id-'. $n['id'] .'-edit">';
@@ -160,7 +160,7 @@ function allowRender($route) {
 		// Comments edit
 		$route = explode('/', $_SERVER['REQUEST_URI']);
 
-		if( $route[1] === 'comment' && $route[3] === 'edit') { 
+		if( $route[1] === 'comment' && $route[3] === 'edit' && $counter <= 0) { 
 			if(ACCESS === 'Admin' || ACCESS === 'User') { 
 
 				$cid = $route[2];
@@ -203,6 +203,7 @@ function allowRender($route) {
 			}	
 		}
 
+$counter++;
 
 } /* end foreach */ ?>
 

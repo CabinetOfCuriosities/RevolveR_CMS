@@ -133,8 +133,9 @@ switch( ROUTE['node'] ) {
 							else {
 
 								$STRUCT_COMMENTS['field_id']['value'] = 0;
-								$dbx::query('i', 'revolver__comments', $STRUCT_COMMENTS);		
-
+								if( $counter <= 0 ) {
+									$dbx::query('i', 'revolver__comments', $STRUCT_COMMENTS);	
+								}
 							}
 
 						}
