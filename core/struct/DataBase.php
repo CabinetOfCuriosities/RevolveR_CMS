@@ -105,4 +105,38 @@ $STRUCT_NODES = [
 	]
 ];
 
+$STRUCT_COMMENTS = [
+	'field_id' => [
+		'type'   => 'num', // int
+		'auto'   => true,  // auto increment
+		'length' => 255,
+		'value'  => 0
+	],
+	'field_node_id' => [
+		'type'   => 'num',
+		'length' => 50,
+		'fill'	 => true
+	],
+	'field_user_id' => [
+		'type'   => 'num',
+		'length' => 50,
+		'fill'	 => true
+	],
+	'field_user_name' => [
+		'type'   => 'text',
+		'length' => 100,
+		'fill'	 => true
+	],
+	'field_content' => [
+		'type'   => 'text', // varchar
+		'length' => 30000,
+		'fill'   => true
+	],
+	'field_time' => [
+		'type'   => 'text',
+		'length' => 100,
+		'fill'	 => true
+	],
+];
+
 ?>

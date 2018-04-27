@@ -30,12 +30,7 @@ switch( ROUTE['node'] ) {
 
 		} 
 		else {
-			if( CONTENTS ) {
-
-				//$node_data[] = $node::singleNode( $main_nodes );
-			
-			} 
-			else {
+			if( !CONTENTS ) {
 
 				$dbx::query('s|field_id|asc', 'revolver__nodes', $STRUCT_NODES);
 				$nodes = $dbx::$result['result'];
@@ -57,9 +52,114 @@ switch( ROUTE['node'] ) {
 							'footer'      => true,
 						];
 
+						if( count($vars::getVars()) > 0 ) {
+
+							$struct_1 = [];
+							$struct_2 = [];
+							$struct_3 = [];
+							$struct_4 = [];
+							$struct_5 = [];
+
+							$advanced_action = 'update';
+
+							foreach ($vars::getVars() as $k) {
+
+								if( !empty( $k['revolver_comments_action_edit'] ) ) {
+									$action = 'edit';
+
+								} 
+
+								if(  !empty( $k['revolver_comments_action_delete'] ) ) {
+									$advanced_action = 'delete';
+								}
+
+								if( isset($k['revolver_comment_content']) ) {
+									$STRUCT_COMMENTS['field_content']['value'] = $k['revolver_comment_content'];
+
+									$struct_1['field_content']['new_value'] = $k['revolver_comment_content'];
+									$struct_1['field_content']['criterion_field'] = 'field_id';
+								}
+
+								if( isset($k['revolver_comment_time']) ) {
+									$STRUCT_COMMENTS['field_time']['value'] = $k['revolver_comment_time'];
+
+									$struct_2['field_time']['new_value'] = $k['revolver_comment_time'];
+									$struct_2['field_time']['criterion_field'] = 'field_id';
+								}
+
+								if( isset($k['revolver_comment_user_id']) ) {
+									$STRUCT_COMMENTS['field_user_id']['value'] = $k['revolver_comment_user_id'];
+								}
+
+								if( isset($k['revolver_node_id']) ) {
+									$STRUCT_COMMENTS['field_node_id']['value'] = $k['revolver_node_id'];
+								}
+
+								if( isset($k['revolver_comment_user_name']) ) {
+									$STRUCT_COMMENTS['field_user_name']['value'] = $k['revolver_comment_user_name'];
+								}
+
+								if( isset($k['revolver_comment_id']) ) {
+
+									// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
+
+									$struct_1['field_id']['value'] = $k['revolver_comment_id'];
+									$struct_2['field_id']['value'] = $k['revolver_comment_id'];
+
+									$struct_1['field_content']['criterion_value'] = $k['revolver_comment_id'];
+									$struct_2['field_time']['criterion_value'] = $k['revolver_comment_id'];
+
+								}
+							}
+
+
+							if( $action === 'edit' ) {
+
+								if( $advanced_action === 'delete' ) {
+				
+									$dbx::query('x', 'revolver__comments', $struct_1);
+									header('Location: '. site_host);
+								
+								} 
+								else {
+
+									$dbx::query('u', 'revolver__comments', $struct_1);
+									$dbx::query('u', 'revolver__comments', $struct_2);
+									$dbx::query('u', 'revolver__comments', $struct_5);
+								
+								}
+
+							} 
+							else {
+
+								$STRUCT_COMMENTS['field_id']['value'] = 0;
+								$dbx::query('i', 'revolver__comments', $STRUCT_COMMENTS);		
+
+							}
+
+						}
+
 						if( count(ROUTE) === 1 ) {
 
 							$node_data[$counter]['teaser'] = false;
+							$node_comments = [];
+
+							$dbx::query('s', 'revolver__comments', $STRUCT_COMMENTS);
+
+							if( isset( $dbx::$result['result'] ) ) {
+								foreach($dbx::$result['result'] as $comment => $c) {
+
+									if( $c['field_node_id'] === NODE_ID) {
+										$node_comments[] = [
+											'comment_id' => $c['field_id'],
+											'comment_uid' => $c['field_user_id'],
+											'comment_time' => $c['field_time'],
+											'comment_contents' => $c['field_content'],
+											'comment_user_name' => $c['field_user_name'],
+										];
+									}
+								}
+							}
 
 
 							if( isset( $_COOKIE['usertoken']) ) { 
@@ -532,6 +632,8 @@ switch( ROUTE['node'] ) {
 
 					$dbx::query('i', 'revolver__settings', $STRUCT_SITE);
 
+					// create comments
+					$dbx::query('c', 'revolver__comments', $STRUCT_COMMENTS);
 
 					// Access files fix
 					chmod('/robots.txt', 644);

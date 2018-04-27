@@ -28,6 +28,12 @@ if( strlen($dbConfig) > 0 ) {
 			if( (string)$user['field_email'] === (string)$token_explode[0] ) {
 				if( (string)$user['field_password'] === (string)$token_explode[1] ) {
 					
+					define('USER', [
+						'name'  => $user['field_nickname'],
+						'email' => $user['field_email'],
+						'id'	=> $user['field_id']
+					]);
+
 					define('ACCESS', $user['field_permissions']);
 
 				}
@@ -54,6 +60,10 @@ if( strlen($dbConfig) > 0 ) {
 
 				if( !empty($n['field_description']) ) {
 					define('DESCRIPTION', $n['field_description']);
+				}
+
+				if(!empty($n['field_id'])) {
+					define('NODE_ID', $n['field_id']);
 				}
 
 			}
