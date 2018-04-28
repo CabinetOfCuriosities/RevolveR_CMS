@@ -15,10 +15,15 @@ class Cipher {
 	
 	public static function crypt($method, $data) {
 		
-		$output = false;
+		$key = file_get_contents($_SERVER["DOCUMENT_ROOT"] .'/private/key.ini', true);
 
+		/* Check installation */
+		if( strlen($key) > 0 ) {
+			$secret_key = $key . 'ReVoLvEr#x346!@*';
+		}
+
+		$output = false;
 		$encrypt_method = 'AES-256-CBC';
-		$secret_key = 'ReVoLvEr#x346!@*';
 		$secret_iv = '!IV@_$2';
 
 		$key = hash('sha256', $secret_key);

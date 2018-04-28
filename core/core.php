@@ -121,4 +121,10 @@ $vars = new Variables();
 $mail = new Mail();
 
 
+chmod('/private/key.ini', 644);
 ?>
+
+
+
+
+

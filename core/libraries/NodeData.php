@@ -592,6 +592,10 @@ switch( ROUTE['node'] ) {
 			// redirect to done page
 			if( $passed ) {
 
+				// create key
+				file_put_contents($_SERVER["DOCUMENT_ROOT"] .'/private/key.ini', uniqid());
+
+				// create db config
 				file_put_contents($db_cfgs, $cipher::crypt('encrypt', $db_data));
 
 				/* Installer TEST */
