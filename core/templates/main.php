@@ -143,7 +143,7 @@ function allowRender($route) {
 			 	$render_node .= '<input name="revolver_node_edit_route" type="text" placeholder="Node address" value="'. $n['route'] .'" />';
 			 	$render_node .= '</label>';
 			 	$render_node .= '<label>Node contents:';
-			 	$render_node .= '<textarea id="textarea" rows="20" name="revolver_node_edit_contents" type="text" placeholder="Node contents">'. $n['contents'] .'</textarea>';
+			 	$render_node .= '<textarea id="textarea" rows="20" name="revolver_node_edit_contents" type="text" placeholder="Node contents">'. $safe::safe(html_entity_decode(htmlspecialchars_decode($n['contents']))) .'</textarea>';
 			 	$render_node .= '<input type="hidden" name="revolver_node_edit_id" value="'. preg_replace("/[^0-9]/", '', $n['id']) .'" readonly required />';
 			 	$render_node .= '</label>';
 			 	$render_node .= '<label>Delete node:';
@@ -178,7 +178,7 @@ function allowRender($route) {
 						 	$render_node .= '<legend style="width:40%">Edit review #'. $v['field_id'] .' by: '. $v['field_user_name'] .'</legend>';
 						 	$render_node .= '<label>Comment:';
 						 	$render_node .= '<input type="hidden" name="revolver_comments_action_edit" value="1" />';
-						 	$render_node .= '<textarea id="textarea" rows="5" name="revolver_comment_content" type="text" placeholder="Comment contents">'. $v['field_content'] .'</textarea>';
+						 	$render_node .= '<textarea id="textarea" rows="5" name="revolver_comment_content" type="text" placeholder="Comment contents">'. $safe::safe(html_entity_decode(htmlspecialchars_decode($v['field_content']))) .'</textarea>';
 						 	$render_node .= '<input type="hidden" name="revolver_comment_id" value="'. $cid .'" />';
 						 	$render_node .= '<input type="hidden" name="revolver_node_id" value="'. $v['field_id'] .'" />';
 						 	$render_node .= '<input type="hidden" name="revolver_comment_user_id" value="'. $v['field_user_id'] .'" />';

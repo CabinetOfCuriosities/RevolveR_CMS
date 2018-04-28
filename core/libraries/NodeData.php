@@ -76,7 +76,7 @@ switch( ROUTE['node'] ) {
 								if( isset($k['revolver_comment_content']) ) {
 									$STRUCT_COMMENTS['field_content']['value'] = $k['revolver_comment_content'];
 
-									$struct_1['field_content']['new_value'] = $k['revolver_comment_content'];
+									$struct_1['field_content']['new_value'] = $safe::safe( nl2br($k['revolver_comment_content']) );
 									$struct_1['field_content']['criterion_field'] = 'field_id';
 								}
 
@@ -155,7 +155,7 @@ switch( ROUTE['node'] ) {
 											'comment_id' => $c['field_id'],
 											'comment_uid' => $c['field_user_id'],
 											'comment_time' => $c['field_time'],
-											'comment_contents' => $c['field_content'],
+											'comment_contents' => $safe::safe(html_entity_decode(htmlspecialchars_decode($c['field_content']))),
 											'comment_user_name' => $c['field_user_name'],
 										];
 									}
@@ -195,7 +195,7 @@ switch( ROUTE['node'] ) {
 												}
 
 												if( isset($k['revolver_node_edit_contents']) ) {
-													$struct_2['field_content']['new_value'] = nl2br($k['revolver_node_edit_contents']);
+													$struct_2['field_content']['new_value'] = $safe::safe(nl2br($k['revolver_node_edit_contents']));
 													$struct_2['field_content']['criterion_field'] = 'field_id';
 													$node_contents = nl2br($k['revolver_node_edit_contents']);
 												}
@@ -357,7 +357,7 @@ switch( ROUTE['node'] ) {
 						}
 
 						if( isset($k['revolver_node_edit_contents']) ) {
-							$STRUCT_NODES['field_content']['value'] = nl2br($k['revolver_node_edit_contents']);
+							$STRUCT_NODES['field_content']['value'] = $safe::safe( nl2br($k['revolver_node_edit_contents']) );
 						}
 
 						if( isset($k['revolver_node_edit_description']) ) {

@@ -11,6 +11,7 @@ require_once('./core/struct/DataBase.php');
 // Libraries
 require_once('./core/libraries/DBX.php');
 require_once('./core/libraries/Cipher.php');
+require_once('./core/libraries/SafeHTML.php');
 require_once('./core/libraries/Auth.php');
 require_once('./core/libraries/Menu.php');
 require_once('./core/libraries/Route.php');

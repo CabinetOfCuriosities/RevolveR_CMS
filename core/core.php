@@ -101,8 +101,10 @@ else {
 /* Connect authorization module */
 $auth = new Auth();
 
-	//$GLOBALS["AUTH"] = 0;
-	define('CONTENTS', false);
+/* Safe HTML module Init */
+$safe = new SafeHTML();
+
+define('CONTENTS', false);
 
 /* Revolver Menu templater Init */
 $menu = new Menu();
@@ -117,6 +119,5 @@ $node = new Node();
 $vars = new Variables();
 
 $mail = new Mail();
-
 
 ?>
