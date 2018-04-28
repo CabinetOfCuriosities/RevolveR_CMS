@@ -1,0 +1,39 @@
+##
+## RevolveR CMS :: Access configuration
+##
+
+# Start rewrite engine
+RewriteEngine on
+RewriteBase /
+
+# Secure private
+RewriteRule /?\.htaccess$ - [F,L]
+RewriteRule ^/?private/key\.ini$ - [F,L]
+RewriteRule ^/?private/db_config\.ini$ - [F,L]
+
+
+# Block access to the core files
+<Files *.php>
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Allow main router
+<Files index.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Disable directory browsing
+Options All -Indexes
+
+# Rewrite conditions
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewrite rule
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Route not found
+ErrorDocument 404 /node/404/
