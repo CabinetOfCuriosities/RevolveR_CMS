@@ -1,5 +1,10 @@
 <?php
 
+/* Rebase routes */
+if( $_SERVER['REQUEST_URI'] === '/index.php' ) {
+	header('Location: '. site_host . '');
+}
+
 /* Connect Cipher Library */
 $cipher = new Cipher();
 
