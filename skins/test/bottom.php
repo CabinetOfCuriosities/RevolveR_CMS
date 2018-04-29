@@ -11,7 +11,6 @@
     
     // charging weapons with namespace
     const RevolveR_CMS = new Revolver('$');
-    $.storage(['Revolver=1.0.8'],'set');
 
     function fetchRouteLive() {
 
@@ -91,7 +90,13 @@
 
 				fetchRouteLive();
 			});
-		}    	
+		} 
+
+		// history routes
+		window.onpopstate = function(e) {
+			getPageLive(e.state.url, e.state.title);
+		}
+
     }
 
     // run live
