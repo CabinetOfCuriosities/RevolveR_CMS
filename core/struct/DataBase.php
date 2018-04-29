@@ -41,6 +41,26 @@ $STRUCT_SITE = [
 	],
 ];
 
+$STRUCT_CATEGORIES = [
+	'field_id' => [
+		'type'   => 'num', // varchar
+		'auto'	 => true,
+		'length' => 255,
+		'fill'   => true,
+		'value'  => 0
+	],
+	'field_title' => [
+		'type'   => 'text', // varchar
+		'length' => 500,
+		'fill'   => true
+	],
+	'field_description' => [
+		'type'   => 'text', // varchar
+		'length' => 2500,
+		'fill'   => true
+	]
+];
+
 $STRUCT_USER = [
 	'field_id' => [
 		'type'   => 'num', // int
@@ -105,6 +125,11 @@ $STRUCT_NODES = [
 	],
 	'field_route' => [
 		'type'   => 'text',
+		'length' => 100,
+		'fill'	 => true
+	],
+	'field_category' => [
+		'type'   => 'num',
 		'length' => 100,
 		'fill'	 => true
 	]

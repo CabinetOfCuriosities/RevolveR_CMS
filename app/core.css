@@ -87,6 +87,66 @@ body {
 	min-height: calc(100vh - 70px);
 }
 
+
+	/* categories */
+	.revolver__categories {
+		margin: 30px 0;
+		padding: 0 12px;
+	}
+
+		.revolver__categories dt:first-child {
+			border-top: none;
+		}
+
+		.revolver__categories dt:last-child {
+			border-bottom: none;
+		}
+
+		.revolver__categories dt {
+			font-size: 18px;
+			padding: 6px 0px;
+			color: #8898c0;
+			text-shadow: -1px 0px 2px #fff;
+			font-weight: bold;
+		}
+
+		.revolver__categories dd {
+			margin: 0;
+			padding: 10px 0 30px;
+		}
+
+			.revolver__categories dd:hover p {
+				opacity: .8;
+			} 
+
+			.revolver__categories dd p {
+				background: linear-gradient(to left, rgba(254, 255, 232, 0), rgba(194, 199, 219, 1));
+				border: 2px solid rgba(233, 233, 233, 0.88);
+				outline: 2px dotted rgba(244, 235, 220, 0.62);
+				margin-left: 36px;
+				padding: 5px 10px;
+				color: #666;
+				box-shadow: 0px 0px 10px #888;
+				letter-spacing: 2px;
+				opacity: .5;
+				transition: all .6s ease-in-out;
+			}
+
+			.revolver__categories dd ul {
+				list-style: square outside;
+				margin: 40px 0 20px 56px;
+				color: #a3a3a3;
+			}
+
+			.revolver__categories dd ul li {
+
+			}
+			
+			.revolver__categories dd ul li a {
+				color: rgba(100, 108, 215, 0.59);
+			}
+
+
 	.revolver__article,
 	.revolver__comments {
 		margin: 20px 0;

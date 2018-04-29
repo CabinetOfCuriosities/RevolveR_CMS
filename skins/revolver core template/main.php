@@ -16,6 +16,7 @@ function allowRender($route) {
 	}
 }
 
+
 ?>
 
 <!-- RevolveR :: main -->
@@ -24,7 +25,9 @@ function allowRender($route) {
 
 		if( !$n['editor_mode'] ) { // Render Node
 
-			if(  $_SERVER['REQUEST_URI'] === $n['route'] || allowRender(ROUTE['route']) ) {
+			if( $_SERVER['REQUEST_URI'] === $n['route'] || allowRender(ROUTE['route']) ) {
+
+				$not_found = false;
 
 				define('node_id', preg_replace("/[^0-9]/", '', $n['id']));
 
@@ -112,23 +115,7 @@ function allowRender($route) {
 						$render_node .= '</div>';
 					}
 				}
-			
-			} // 404 
-			else {
-
-				header("HTTP/1.0 404 Not Found");
-				
-				$render_node .= '<article class="revolver__article article-id-404">';
-				$render_node .= '<header class="revolver__article-header">'; 
-				
-				$render_node .= '<h1>Route '. $_SERVER['REQUEST_URI'] .' not found on this site :: 404</h1>';
-
-				$render_node .= '</header>';
-				$render_node .= '<div class="revolver__article-contents">Sorry this route was not found on this site. Begin at <a href="/">homepage</a>.</div>';
-
-				$render_node .= '</article>';
-			}
-
+			} 
 		} 
 		else { 
 
@@ -144,6 +131,29 @@ function allowRender($route) {
 			if( isset($n['warning']) ) {
 				$render_node .= $n['warning'];
 			}
+
+			 	$render_node .= '<fieldset>';
+			 	$render_node .= '<legend>Category:</legend>';
+			 	$render_node .= '<label>Chose node category:';
+			 	$render_node .= '&nbsp;&nbsp;<select name="revolver_node_edit_category">';
+
+			 	$dbx::query('s|field_id|asc', 'revolver__categories', $STRUCT_CATEGORIES);
+		 		if( isset( $dbx::$result['result'] ) ) {
+		 			foreach ($dbx::$result['result'] as $k => $v) {
+
+		 				if( $v['field_id'] === $n['category'] ) {
+		 					$render_node .= '<option value="'. $v['field_id'] .'" selected>'. $v['field_title'] .'</option>';
+		 				} 
+		 				else {
+		 					$render_node .= '<option value="'. $v['field_id'] .'">'. $v['field_title'] .'</option>';
+		 				}
+		 			}
+		 		}
+
+			 	$render_node .= '</select>';
+			 	$render_node .= '</label>';
+			 	$render_node .= '</fieldset>';
+
 			 	$render_node .= '<fieldset>';
 			 	$render_node .= '<legend>#'. $n['id'] .' Editor:</legend>';
 			 	$render_node .= '<label>Node title:';

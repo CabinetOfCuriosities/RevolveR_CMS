@@ -69,7 +69,7 @@ if( strlen($dbConfig) > 0 ) {
 
 				if(!empty($n['field_id'])) {
 					define('NODE_ID', $n['field_id']);
-				}
+				} 
 
 			}
 
@@ -103,6 +103,7 @@ if( strlen($dbConfig) > 0 ) {
 } 
 else {
 	define('INSTALLED', false);
+	define('SKIN', './skins/revolver core template/index.php');
 }
 
 /* Connect authorization module */
@@ -127,8 +128,6 @@ $vars = new Variables();
 
 $mail = new Mail();
 
-// Site render
-$skins = scandir('./skins/', 1);
 require_once(SKIN);
 
 ?>

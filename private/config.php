@@ -101,6 +101,15 @@ define('main_nodes', [
 		'node' => '#preferences',
 		'id'   => 5
 	],
+	'categories' => [	
+		'title' => 'Categories',
+		'param_check' => [
+			'menu' => 1
+		],
+		'route'=> '/categories/',
+		'node' => '#categories',
+		'id'   => 'categories'
+	],
 	'logout' => [
 		'title' => 'Account logout',
 		'param_check' => [

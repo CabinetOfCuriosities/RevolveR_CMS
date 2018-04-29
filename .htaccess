@@ -11,6 +11,10 @@ RewriteRule /?\.htaccess$ - [F,L]
 RewriteRule ^/?private/key\.ini$ - [F,L]
 RewriteRule ^/?private/db_config\.ini$ - [F,L]
 
+# Add slash
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !(.*)/$
+RewriteRule ^(.*[^/])$ $1/ [L,R=301]
 
 # Block access to the core files
 <Files *.php>

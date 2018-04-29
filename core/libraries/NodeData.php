@@ -32,7 +32,10 @@ switch( ROUTE['node'] ) {
 		else {
 			if( !CONTENTS ) {
 
+
+
 				$dbx::query('s|field_id|asc', 'revolver__nodes', $STRUCT_NODES);
+				
 				$nodes = $dbx::$result['result'];
 
 				unset($dbx::$result['result']);
@@ -50,6 +53,7 @@ switch( ROUTE['node'] ) {
 							'contents'    => html_entity_decode(htmlspecialchars_decode($node['field_content'])),
 							'teaser'      => true,
 							'footer'      => true,
+							'category'	  => $node['field_category'],
 						];
 
 						if( count($vars::getVars()) > 0 ) {
@@ -177,11 +181,14 @@ switch( ROUTE['node'] ) {
 									if( $test_uri[count($test_uri) - 2] === 'edit' ) {
 
 										$node_data[$counter]['editor_mode'] = true;
+
+										//$node_data[$counter]['category'] = 
 										
 										$struct_1 = [];
 										$struct_2 = [];
 										$struct_3 = [];
 										$struct_4 = [];
+										$struct_5 = [];
 
 										$action = false;
 									
@@ -212,6 +219,11 @@ switch( ROUTE['node'] ) {
 													$node_route = $k['revolver_node_edit_route'];
 												}
 
+												if( isset($k['revolver_node_edit_category']) ) {
+													$struct_5['field_category']['new_value'] = (int)$k['revolver_node_edit_category'];
+													$struct_5['field_category']['criterion_field'] = 'field_id';
+												}
+
 												if( isset($k['revolver_node_edit_id']) ) {
 
 													// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
@@ -220,11 +232,13 @@ switch( ROUTE['node'] ) {
 													$struct_2['field_id']['value'] = $k['revolver_node_edit_id'];
 													$struct_3['field_id']['value'] = $k['revolver_node_edit_id'];
 													$struct_4['field_id']['value'] = $k['revolver_node_edit_id'];
+													$struct_5['field_id']['value'] = $k['revolver_node_edit_id'];
 
 													$struct_1['field_title']['criterion_value'] = $k['revolver_node_edit_id'];
 													$struct_2['field_content']['criterion_value'] = $k['revolver_node_edit_id'];
 													$struct_3['field_description']['criterion_value'] = $k['revolver_node_edit_id'];
 													$struct_4['field_route']['criterion_value'] = $k['revolver_node_edit_id'];
+													$struct_5['field_category']['criterion_value'] =  $k['revolver_node_edit_id'];
 
 													$node_id = $k['revolver_node_edit_id'];
 
@@ -288,6 +302,8 @@ switch( ROUTE['node'] ) {
 														$dbx::query('u', 'revolver__nodes', $struct_2);
 														$dbx::query('u', 'revolver__nodes', $struct_3);
 														$dbx::query('u', 'revolver__nodes', $struct_4);
+														$dbx::query('u', 'revolver__nodes', $struct_5);
+
 														header('Location: '. site_host . $struct_4['field_route']['new_value']);
 
 													} 
@@ -327,7 +343,8 @@ switch( ROUTE['node'] ) {
 							}
 						
 						} $counter++;
-					} 
+					
+				} 
 			}
 		}
 
@@ -366,6 +383,10 @@ switch( ROUTE['node'] ) {
 
 						if( isset($k['revolver_node_edit_route']) ) {
 							$STRUCT_NODES['field_route']['value'] = $k['revolver_node_edit_route'];
+						}
+
+						if( isset($k['revolver_node_edit_category']) ) {
+							$STRUCT_NODES['field_category']['value'] = $k['revolver_node_edit_category']; 
 						}
 					}
 				
@@ -434,6 +455,22 @@ switch( ROUTE['node'] ) {
 			 	$contents .= '</label>';
 			 	$contents .= '<label>Node contents:';
 			 	$contents .= '<textarea rows="20" name="revolver_node_edit_contents" type="text" placeholder="Node contents"></textarea>';
+			 	$contents .= '</label>';
+			 	$contents .= '</fieldset>';
+			 	$contents .= '<fieldset>';
+			 	$contents .= '<legend>Category:</legend>';
+			 	$contents .= '<label>Chose node category:';
+			 	$contents .= '&nbsp;&nbsp;<select name="revolver_node_edit_category">';
+
+		 		$dbx::query('s|field_id|asc', 'revolver__categories', $STRUCT_CATEGORIES);
+
+		 		if( isset( $dbx::$result['result'] ) ) {
+		 			foreach ($dbx::$result['result'] as $k => $v) {
+		 				$contents .= '<option value="'. $v['field_id'] .'">'. $v['field_title'] .'</option>';
+		 			}
+		 		}
+
+			 	$contents .= '</select>';
 			 	$contents .= '</label>';
 			 	$contents .= '</fieldset>';
 			 	$contents .= '<input type="submit" value="Submit" />';
@@ -615,15 +652,26 @@ switch( ROUTE['node'] ) {
 					// create nodes
 					$dbx::query('c', 'revolver__nodes', $STRUCT_NODES);
 
+					$STRUCT_NODES['field_id']['value'] = 0;
 					$STRUCT_NODES['field_title']['value'] = 'Welcome your new site based on RevolveR CMS!';
 					$STRUCT_NODES['field_content']['value'] = '<p>Revolver CMS installed but no any contents yet!</p> <p><a href="/node/create/">Create it first!</a></p>';
 					$STRUCT_NODES['field_description']['value'] = 'RevolveR CMS Homepage';
 					$STRUCT_NODES['field_user']['value'] = $user_data_name;
 					$STRUCT_NODES['field_route']['value'] = '/welcome/';
 					$STRUCT_NODES['field_time']['value'] = date('d/m/Y');
+					$STRUCT_NODES['field_category']['value'] = 1;
 
 					$dbx::query('i', 'revolver__nodes', $STRUCT_NODES);
-					
+
+					// create categories
+					$dbx::query('c', 'revolver__categories', $STRUCT_CATEGORIES);
+
+					$STRUCT_CATEGORIES['field_id']['value'] = 0;
+					$STRUCT_CATEGORIES['field_title']['value'] = 'Welcome';
+					$STRUCT_CATEGORIES['field_description']['value'] = 'Welcome to RevolveR CMS';
+
+					$dbx::query('i', 'revolver__categories', $STRUCT_CATEGORIES);
+
 					// create users
 					$dbx::query('c', 'revolver__users', $STRUCT_USER);
 					$dbx::query('i', 'revolver__users', $STRUCT_USER);
@@ -783,6 +831,105 @@ switch( ROUTE['node'] ) {
 			'header'    => 'HTTP/2.0 200 OK',
 			'id'	    => 'preferences',
 			'route'     => '/preferences/',
+			'contents'  => $contents,
+			'teaser'    => false,
+			'footer'    => false,
+			'time'		=> date('d/m/y')
+		];
+
+		break;
+
+	case '#categories':
+
+		$title = 'Contents catrgories';
+
+		if( ACCESS === 'Admin' ) {
+
+
+			if( count($vars::getVars()) > 0 ) { 
+				foreach ($vars::getVars() as $k) { 
+
+					if( isset($k['revolver_category_title']) ) {
+						$STRUCT_CATEGORIES['field_title']['value'] = $k['revolver_category_title'];
+					}
+
+					if( isset($k['revolver_category_description']) ) {
+						$STRUCT_CATEGORIES['field_description']['value'] = $k['revolver_category_description'];
+					}
+
+
+				}
+
+				$STRUCT_CATEGORIES['field_id']['value'] = 0;
+
+				$dbx::query('i', 'revolver__categories', $STRUCT_CATEGORIES);
+
+			}
+
+		 	$contents .= '<form method="post" accept-charset="utf-8" />';
+		 	$contents .= '<fieldset>';
+		 	$contents .= '<legend style="width: 40%">Add category:</legend>';
+		 	$contents .= '<label>Category title:';
+		 	$contents .= '<input name="revolver_category_title" type="text" placeholder="Type category name" required />';
+		 	$contents .= '</label>';
+		 	$contents .= '<label>Category description:';
+		 	$contents .= '<input name="revolver_category_description" type="text" placeholder="Type category description" required />';
+		 	$contents .= '</label>';
+		 	$contents .= '</fieldset>';
+		 	$contents .= '<input type="submit" value="Submit" />';
+		 	$contents .= '</form>';
+		}
+
+		$dbx::query('s|field_id|asc', 'revolver__categories', $STRUCT_CATEGORIES);
+
+		if( isset($dbx::$result['result']) ) {
+			
+			$contents .= '<dl class="revolver__categories">';
+
+			foreach ($dbx::$result['result'] as $cat => $val) {
+
+				
+				$contents .= '<dt>#' . $val['field_id'] . ' :: '.  $val['field_title'] .'</dt>';
+				$contents .= '<dd><p>'. $val['field_description'] .'</p>';
+
+				$dbx::query('s|field_id|asc', 'revolver__nodes', $STRUCT_NODES);
+
+				if( isset($dbx::$result['result']) ) {
+
+					$contents .= '<ul>';
+
+					foreach ($dbx::$result['result'] as $node => $v) {
+
+						if( $v['field_category'] === $val['field_id'] ) {
+
+							$contents .= '<li><a href="'. $v['field_route'] .'" title="'. $v['field_description'] .'">#'. $v['field_id'] .' '. $v['field_title'] .'</a></li>';				
+
+						}
+
+					}
+				
+					$contents .= '</ul></dd>';
+
+				} 
+				else {
+					$contents .= 'No any documents was found on this category for now';
+				}
+
+
+			}
+
+			$contents .= '</dl>'; 
+
+		} 
+		else {
+			$contents = '<p>No any categories find at now.</p>';
+		}
+
+		$node_data[] = [
+			'title'     => $title,
+			'header'    => 'HTTP/2.0 200 OK',
+			'id'	    => 'categories',
+			'route'     => '/categories/',
 			'contents'  => $contents,
 			'teaser'    => false,
 			'footer'    => false,
