@@ -30,10 +30,7 @@ switch( ROUTE['node'] ) {
 
 		} 
 		else {
-			if( !CONTENTS ) {
-
-
-
+			
 				$dbx::query('s|field_id|asc', 'revolver__nodes', $STRUCT_NODES);
 				
 				$nodes = $dbx::$result['result'];
@@ -42,310 +39,312 @@ switch( ROUTE['node'] ) {
 
 				$counter = 0;
 
-				foreach ($nodes as $node) {
+				if( CONTENTS_FLAG ) {
 
-						$node_data[$counter] = [
-							'title'       => $node['field_title'],
-							'header'      => 'HTTP/2.0 200 OK',
-							'id'	      => 'node-'. $node['field_id'],
-							'description' => $node['field_description'],
-							'route'       => $node['field_route'],
-							'contents'    => html_entity_decode(htmlspecialchars_decode($node['field_content'])),
-							'teaser'      => true,
-							'footer'      => true,
-							'category'	  => $node['field_category'],
-						];
+					foreach ($nodes as $node) {
 
-						if( count($vars::getVars()) > 0 ) {
+							$node_data[$counter] = [
+								'title'       => $node['field_title'],
+								'header'      => 'HTTP/2.0 200 OK',
+								'id'	      => 'node-'. $node['field_id'],
+								'description' => $node['field_description'],
+								'route'       => $node['field_route'],
+								'contents'    => html_entity_decode(htmlspecialchars_decode($node['field_content'])),
+								'teaser'      => true,
+								'footer'      => true,
+								'category'	  => $node['field_category'],
+							];
 
-							$struct_1 = [];
-							$struct_2 = [];
-							$struct_3 = [];
-							$struct_4 = [];
-							$struct_5 = [];
+							if( count($vars::getVars()) > 0 ) {
 
-							$advanced_action = 'update';
+								$struct_1 = [];
+								$struct_2 = [];
+								$struct_3 = [];
+								$struct_4 = [];
+								$struct_5 = [];
 
-							foreach ($vars::getVars() as $k) {
+								$advanced_action = 'update';
 
-								if( !empty( $k['revolver_comments_action_edit'] ) ) {
-									$action = 'edit';
+								foreach ($vars::getVars() as $k) {
 
-								} 
+									if( !empty( $k['revolver_comments_action_edit'] ) ) {
+										$action = 'edit';
 
-								if(  !empty( $k['revolver_comments_action_delete'] ) ) {
-									$advanced_action = 'delete';
+									} 
+
+									if(  !empty( $k['revolver_comments_action_delete'] ) ) {
+										$advanced_action = 'delete';
+									}
+
+									if( isset($k['revolver_comment_content']) ) {
+										$STRUCT_COMMENTS['field_content']['value'] = $k['revolver_comment_content'];
+
+										$struct_1['field_content']['new_value'] = $safe::safe( nl2br($k['revolver_comment_content']) );
+										$struct_1['field_content']['criterion_field'] = 'field_id';
+									}
+
+									if( isset($k['revolver_comment_time']) ) {
+										$STRUCT_COMMENTS['field_time']['value'] = $k['revolver_comment_time'];
+
+										$struct_2['field_time']['new_value'] = $k['revolver_comment_time'];
+										$struct_2['field_time']['criterion_field'] = 'field_id';
+									}
+
+									if( isset($k['revolver_comment_user_id']) ) {
+										$STRUCT_COMMENTS['field_user_id']['value'] = $k['revolver_comment_user_id'];
+									}
+
+									if( isset($k['revolver_node_id']) ) {
+										$STRUCT_COMMENTS['field_node_id']['value'] = $k['revolver_node_id'];
+									}
+
+									if( isset($k['revolver_comment_user_name']) ) {
+										$STRUCT_COMMENTS['field_user_name']['value'] = $k['revolver_comment_user_name'];
+									}
+
+									if( isset($k['revolver_comment_id']) ) {
+
+										// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
+
+										$struct_1['field_id']['value'] = $k['revolver_comment_id'];
+										$struct_2['field_id']['value'] = $k['revolver_comment_id'];
+
+										$struct_1['field_content']['criterion_value'] = $k['revolver_comment_id'];
+										$struct_2['field_time']['criterion_value'] = $k['revolver_comment_id'];
+
+									}
 								}
 
-								if( isset($k['revolver_comment_content']) ) {
-									$STRUCT_COMMENTS['field_content']['value'] = $k['revolver_comment_content'];
 
-									$struct_1['field_content']['new_value'] = $safe::safe( nl2br($k['revolver_comment_content']) );
-									$struct_1['field_content']['criterion_field'] = 'field_id';
-								}
+								if( $action === 'edit' ) {
 
-								if( isset($k['revolver_comment_time']) ) {
-									$STRUCT_COMMENTS['field_time']['value'] = $k['revolver_comment_time'];
+									if( $advanced_action === 'delete' ) {
+					
+										$dbx::query('x', 'revolver__comments', $struct_1);
+										header('Location: '. site_host);
+									
+									} 
+									else {
 
-									$struct_2['field_time']['new_value'] = $k['revolver_comment_time'];
-									$struct_2['field_time']['criterion_field'] = 'field_id';
-								}
+										$dbx::query('u', 'revolver__comments', $struct_1);
+										$dbx::query('u', 'revolver__comments', $struct_2);
+										$dbx::query('u', 'revolver__comments', $struct_5);
+									
+									}
 
-								if( isset($k['revolver_comment_user_id']) ) {
-									$STRUCT_COMMENTS['field_user_id']['value'] = $k['revolver_comment_user_id'];
-								}
-
-								if( isset($k['revolver_node_id']) ) {
-									$STRUCT_COMMENTS['field_node_id']['value'] = $k['revolver_node_id'];
-								}
-
-								if( isset($k['revolver_comment_user_name']) ) {
-									$STRUCT_COMMENTS['field_user_name']['value'] = $k['revolver_comment_user_name'];
-								}
-
-								if( isset($k['revolver_comment_id']) ) {
-
-									// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
-
-									$struct_1['field_id']['value'] = $k['revolver_comment_id'];
-									$struct_2['field_id']['value'] = $k['revolver_comment_id'];
-
-									$struct_1['field_content']['criterion_value'] = $k['revolver_comment_id'];
-									$struct_2['field_time']['criterion_value'] = $k['revolver_comment_id'];
-
-								}
-							}
-
-
-							if( $action === 'edit' ) {
-
-								if( $advanced_action === 'delete' ) {
-				
-									$dbx::query('x', 'revolver__comments', $struct_1);
-									header('Location: '. site_host);
-								
 								} 
 								else {
 
-									$dbx::query('u', 'revolver__comments', $struct_1);
-									$dbx::query('u', 'revolver__comments', $struct_2);
-									$dbx::query('u', 'revolver__comments', $struct_5);
-								
-								}
-
-							} 
-							else {
-
-								$STRUCT_COMMENTS['field_id']['value'] = 0;
-								if( $counter <= 0 ) {
-									$dbx::query('i', 'revolver__comments', $STRUCT_COMMENTS);	
-								}
-							}
-
-						}
-
-						if( count(ROUTE) === 1 ) {
-
-							$node_data[$counter]['teaser'] = false;
-							$node_comments = [];
-
-							$dbx::query('s', 'revolver__comments', $STRUCT_COMMENTS);
-
-							if( isset( $dbx::$result['result'] ) ) {
-								foreach($dbx::$result['result'] as $comment => $c) {
-
-									if( $c['field_node_id'] === NODE_ID) {
-										$node_comments[] = [
-											'comment_id' => $c['field_id'],
-											'comment_uid' => $c['field_user_id'],
-											'comment_time' => $c['field_time'],
-											'comment_contents' => $safe::safe(html_entity_decode(htmlspecialchars_decode($c['field_content']))),
-											'comment_user_name' => $c['field_user_name'],
-										];
+									$STRUCT_COMMENTS['field_id']['value'] = 0;
+									if( $counter <= 0 ) {
+										$dbx::query('i', 'revolver__comments', $STRUCT_COMMENTS);	
 									}
 								}
+
 							}
 
+							if( count(ROUTE) === 1 ) {
 
-							if( isset( $_COOKIE['usertoken']) ) { 
+								$node_data[$counter]['teaser'] = false;
+								$node_comments = [];
 
-								$token_explode = explode('|', $cipher::crypt('decrypt', $_COOKIE['usertoken']));
+								$dbx::query('s', 'revolver__comments', $STRUCT_COMMENTS);
 
-								if( $token_explode[2] === $node['field_user'] || ACCESS === 'Admin' ) {
-									$node_data[$counter]['footer'] = true;
-									$node_data[$counter]['editor'] = true;
+								if( isset( $dbx::$result['result'] ) ) {
+									foreach($dbx::$result['result'] as $comment => $c) {
 
-
-									$test_uri = explode('/', (string)$_SERVER['REQUEST_URI']);
-
-									if( $test_uri[count($test_uri) - 2] === 'edit' ) {
-
-										$node_data[$counter]['editor_mode'] = true;
-
-										//$node_data[$counter]['category'] = 
-										
-										$struct_1 = [];
-										$struct_2 = [];
-										$struct_3 = [];
-										$struct_4 = [];
-										$struct_5 = [];
-
-										$action = false;
-									
-										if( count($vars::getVars()) > 0 ) {
-											foreach ($vars::getVars() as $k) {
-
-												if( isset($k['revolver_node_edit_title']) ) {
-													$struct_1['field_title']['new_value'] = $k['revolver_node_edit_title'];
-													$struct_1['field_title']['criterion_field'] = 'field_id';
-													$node_title = $k['revolver_node_edit_title'];
-												}
-
-												if( isset($k['revolver_node_edit_contents']) ) {
-													$struct_2['field_content']['new_value'] = $safe::safe(nl2br($k['revolver_node_edit_contents']));
-													$struct_2['field_content']['criterion_field'] = 'field_id';
-													$node_contents = nl2br($k['revolver_node_edit_contents']);
-												}
-
-												if( isset($k['revolver_node_edit_description']) ) {
-													$struct_3['field_description']['new_value'] = $k['revolver_node_edit_description'];
-													$struct_3['field_description']['criterion_field'] = 'field_id';
-													$node_description = $k['revolver_node_edit_description'];
-												}
-
-												if( isset($k['revolver_node_edit_route']) ) {
-													$struct_4['field_route']['new_value'] = $k['revolver_node_edit_route'];
-													$struct_4['field_route']['criterion_field'] = 'field_id';
-													$node_route = $k['revolver_node_edit_route'];
-												}
-
-												if( isset($k['revolver_node_edit_category']) ) {
-													$struct_5['field_category']['new_value'] = (int)$k['revolver_node_edit_category'];
-													$struct_5['field_category']['criterion_field'] = 'field_id';
-												}
-
-												if( isset($k['revolver_node_edit_id']) ) {
-
-													// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
-
-													$struct_1['field_id']['value'] = $k['revolver_node_edit_id'];
-													$struct_2['field_id']['value'] = $k['revolver_node_edit_id'];
-													$struct_3['field_id']['value'] = $k['revolver_node_edit_id'];
-													$struct_4['field_id']['value'] = $k['revolver_node_edit_id'];
-													$struct_5['field_id']['value'] = $k['revolver_node_edit_id'];
-
-													$struct_1['field_title']['criterion_value'] = $k['revolver_node_edit_id'];
-													$struct_2['field_content']['criterion_value'] = $k['revolver_node_edit_id'];
-													$struct_3['field_description']['criterion_value'] = $k['revolver_node_edit_id'];
-													$struct_4['field_route']['criterion_value'] = $k['revolver_node_edit_id'];
-													$struct_5['field_category']['criterion_value'] =  $k['revolver_node_edit_id'];
-
-													$node_id = $k['revolver_node_edit_id'];
-
-												}
-
-												if( isset($k['revolver_node_edit_delete']) ) {
-													$action = 'delete';
-												} 
-												else {
-													$action = 'update';
-												}
-
-											}
-
-
-											if( $action === 'update' ) {
-
-												if( (int)$node_id === (int)$node['field_id']) {
-
-													// check route
-													$passed = true;
-
-													// check for system routes
-													foreach (main_nodes as $k => $v) {
-														if( trim($v['route']) === trim($struct_4['field_route']['new_value']) ) {
-															$passed =  false;
-														}
-													}
-
-													// check for exists contents
-													$dbx::query('s', 'revolver__nodes', $STRUCT_NODES);
-													foreach ($dbx::$result['result'] as $k => $v) {	
-														if( trim( $v['field_route'] ) === trim($struct_4['field_route']['new_value']) ) {
-															
-															// if same node id allow update
-															if( $v['field_id'] === $node_id ) {
-																$passed = true;
-															} 
-															else {
-																$passed = false;
-															}
-														}
-													}
-
-													// check for route is correct
-													$route_fix = ltrim(rtrim($struct_4['field_route']['new_value'], "/"), "/");
-													$route_fix_check = explode('/', $route_fix);
-
-													foreach ($route_fix_check as $k) {
-														if( strlen($k) <= 0) {
-															$passed = false;
-														} 
-													}
-
-													$struct_4['field_route']['new_value'] = '/'. $route_fix .'/';
-
-
-													if( $passed ) {
-
-														$dbx::query('u', 'revolver__nodes', $struct_1);
-														$dbx::query('u', 'revolver__nodes', $struct_2);
-														$dbx::query('u', 'revolver__nodes', $struct_3);
-														$dbx::query('u', 'revolver__nodes', $struct_4);
-														$dbx::query('u', 'revolver__nodes', $struct_5);
-
-														header('Location: '. site_host . $struct_4['field_route']['new_value']);
-
-													} 
-													else {
-														$node_data[$counter]['warning'] = '<p class="revolver__warning">Defined route exist. Please change other route.</p>';
-													}
-												}	
-											
-											} 
-											else if( $action === 'delete' ) {
-
-												if( count($vars::getVars()) > 0 ) {
-													foreach ($vars::getVars() as $k) {
-
-														if( $k['revolver_node_edit_id'] === $node['field_id']) {
-
-															$struct_1['field_id']['value'] = $k['revolver_node_edit_id'];
-															$struct_1['field_title']['criterion_field'] = 'field_id';
-															$struct_1['field_title']['criterion_value'] = $node['field_id'];
-
-															$dbx::query('x', 'revolver__nodes', $struct_1);
-														
-															header('Location: '. site_host );
-															
-														}
-													}
-												}
-											
-											}
-
+										if( $c['field_node_id'] === NODE_ID) {
+											$node_comments[] = [
+												'comment_id' => $c['field_id'],
+												'comment_uid' => $c['field_user_id'],
+												'comment_time' => $c['field_time'],
+												'comment_contents' => $safe::safe(html_entity_decode(htmlspecialchars_decode($c['field_content']))),
+												'comment_user_name' => $c['field_user_name'],
+											];
 										}
 									}
 								}
-							} 
-							else {
-								$node_data[$counter]['footer'] = false;
-							}
+
+
+								if( isset( $_COOKIE['usertoken']) ) { 
+
+									$token_explode = explode('|', $cipher::crypt('decrypt', $_COOKIE['usertoken']));
+
+									if( $token_explode[2] === $node['field_user'] || ACCESS === 'Admin' ) {
+										$node_data[$counter]['footer'] = true;
+										$node_data[$counter]['editor'] = true;
+
+
+										$test_uri = explode('/', (string)$_SERVER['REQUEST_URI']);
+
+										if( $test_uri[count($test_uri) - 2] === 'edit' ) {
+
+											$node_data[$counter]['editor_mode'] = true;
+
+											//$node_data[$counter]['category'] = 
+											
+											$struct_1 = [];
+											$struct_2 = [];
+											$struct_3 = [];
+											$struct_4 = [];
+											$struct_5 = [];
+
+											$action = false;
+										
+											if( count($vars::getVars()) > 0 ) {
+												foreach ($vars::getVars() as $k) {
+
+													if( isset($k['revolver_node_edit_title']) ) {
+														$struct_1['field_title']['new_value'] = $k['revolver_node_edit_title'];
+														$struct_1['field_title']['criterion_field'] = 'field_id';
+														$node_title = $k['revolver_node_edit_title'];
+													}
+
+													if( isset($k['revolver_node_edit_contents']) ) {
+														$struct_2['field_content']['new_value'] = $safe::safe(nl2br($k['revolver_node_edit_contents']));
+														$struct_2['field_content']['criterion_field'] = 'field_id';
+														$node_contents = nl2br($k['revolver_node_edit_contents']);
+													}
+
+													if( isset($k['revolver_node_edit_description']) ) {
+														$struct_3['field_description']['new_value'] = $k['revolver_node_edit_description'];
+														$struct_3['field_description']['criterion_field'] = 'field_id';
+														$node_description = $k['revolver_node_edit_description'];
+													}
+
+													if( isset($k['revolver_node_edit_route']) ) {
+														$struct_4['field_route']['new_value'] = $k['revolver_node_edit_route'];
+														$struct_4['field_route']['criterion_field'] = 'field_id';
+														$node_route = $k['revolver_node_edit_route'];
+													}
+
+													if( isset($k['revolver_node_edit_category']) ) {
+														$struct_5['field_category']['new_value'] = (int)$k['revolver_node_edit_category'];
+														$struct_5['field_category']['criterion_field'] = 'field_id';
+													}
+
+													if( isset($k['revolver_node_edit_id']) ) {
+
+														// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
+
+														$struct_1['field_id']['value'] = $k['revolver_node_edit_id'];
+														$struct_2['field_id']['value'] = $k['revolver_node_edit_id'];
+														$struct_3['field_id']['value'] = $k['revolver_node_edit_id'];
+														$struct_4['field_id']['value'] = $k['revolver_node_edit_id'];
+														$struct_5['field_id']['value'] = $k['revolver_node_edit_id'];
+
+														$struct_1['field_title']['criterion_value'] = $k['revolver_node_edit_id'];
+														$struct_2['field_content']['criterion_value'] = $k['revolver_node_edit_id'];
+														$struct_3['field_description']['criterion_value'] = $k['revolver_node_edit_id'];
+														$struct_4['field_route']['criterion_value'] = $k['revolver_node_edit_id'];
+														$struct_5['field_category']['criterion_value'] =  $k['revolver_node_edit_id'];
+
+														$node_id = $k['revolver_node_edit_id'];
+
+													}
+
+													if( isset($k['revolver_node_edit_delete']) ) {
+														$action = 'delete';
+													} 
+													else {
+														$action = 'update';
+													}
+
+												}
+
+
+												if( $action === 'update' ) {
+
+													if( (int)$node_id === (int)$node['field_id']) {
+
+														// check route
+														$passed = true;
+
+														// check for system routes
+														foreach (main_nodes as $k => $v) {
+															if( trim($v['route']) === trim($struct_4['field_route']['new_value']) ) {
+																$passed =  false;
+															}
+														}
+
+														// check for exists contents
+														$dbx::query('s', 'revolver__nodes', $STRUCT_NODES);
+														foreach ($dbx::$result['result'] as $k => $v) {	
+															if( trim( $v['field_route'] ) === trim($struct_4['field_route']['new_value']) ) {
+																
+																// if same node id allow update
+																if( $v['field_id'] === $node_id ) {
+																	$passed = true;
+																} 
+																else {
+																	$passed = false;
+																}
+															}
+														}
+
+														// check for route is correct
+														$route_fix = ltrim(rtrim($struct_4['field_route']['new_value'], "/"), "/");
+														$route_fix_check = explode('/', $route_fix);
+
+														foreach ($route_fix_check as $k) {
+															if( strlen($k) <= 0) {
+																$passed = false;
+															} 
+														}
+
+														$struct_4['field_route']['new_value'] = '/'. $route_fix .'/';
+
+
+														if( $passed ) {
+
+															$dbx::query('u', 'revolver__nodes', $struct_1);
+															$dbx::query('u', 'revolver__nodes', $struct_2);
+															$dbx::query('u', 'revolver__nodes', $struct_3);
+															$dbx::query('u', 'revolver__nodes', $struct_4);
+															$dbx::query('u', 'revolver__nodes', $struct_5);
+
+															header('Location: '. site_host . $struct_4['field_route']['new_value']);
+
+														} 
+														else {
+															$node_data[$counter]['warning'] = '<p class="revolver__warning">Defined route exist. Please change other route.</p>';
+														}
+													}	
+												
+												} 
+												else if( $action === 'delete' ) {
+
+													if( count($vars::getVars()) > 0 ) {
+														foreach ($vars::getVars() as $k) {
+
+															if( $k['revolver_node_edit_id'] === $node['field_id']) {
+
+																$struct_1['field_id']['value'] = $k['revolver_node_edit_id'];
+																$struct_1['field_title']['criterion_field'] = 'field_id';
+																$struct_1['field_title']['criterion_value'] = $node['field_id'];
+
+																$dbx::query('x', 'revolver__nodes', $struct_1);
+															
+																header('Location: '. site_host );
+																
+															}
+														}
+													}
+												
+												}
+
+											}
+										}
+									}
+								} 
+								else {
+									$node_data[$counter]['footer'] = false;
+								}
+							
+							} $counter++;
 						
-						} $counter++;
-					
+					} 					
 				} 
-			}
 		}
 
 		break;

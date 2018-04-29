@@ -16,7 +16,6 @@ function allowRender($route) {
 	}
 }
 
-
 ?>
 
 <!-- RevolveR :: main -->
@@ -73,7 +72,7 @@ function allowRender($route) {
 				if( !allowRender($_SERVER['REQUEST_URI']) ) {
 
 					$render_node .= '<section class="revolver__advanced-contents">';
-					$render_node .= '<h1>Comments</h1>';
+					$render_node .= '<h1>Reviews</h1>';
 				
 					// comments show
 					foreach( $node_comments as $c ) {

@@ -52,6 +52,7 @@ if( strlen($dbConfig) > 0 ) {
 	}
 
 	$passway = $_SERVER['REQUEST_URI'];
+	$not_found = true;
 
 	$dbx::query('s|field_id|asc', 'revolver__nodes', $STRUCT_NODES);
 
@@ -71,8 +72,20 @@ if( strlen($dbConfig) > 0 ) {
 					define('NODE_ID', $n['field_id']);
 				} 
 
-			}
+				$not_found = false;
 
+			} 
+			else if( $passway !== '/' ) {
+
+				foreach (main_nodes as $key) {
+
+					if( $key['route'] === $passway ) {
+					
+						$not_found = false;
+					
+					} 
+				}
+			}
 		}
 
 		$dbx::query('s|field_id|asc', 'revolver__settings', $STRUCT_SITE);
@@ -93,7 +106,7 @@ if( strlen($dbConfig) > 0 ) {
 				}
 
 				if( !empty($v['field_site_skin']) ) {
-					define('SKIN', './skins/'. $v['field_site_skin'] .'/index.php');
+					define('SKIN', $v['field_site_skin']);
 				}
 
 			}
@@ -103,7 +116,7 @@ if( strlen($dbConfig) > 0 ) {
 } 
 else {
 	define('INSTALLED', false);
-	define('SKIN', './skins/revolver core template/index.php');
+	define('SKIN', 'revolver core template');
 }
 
 /* Connect authorization module */
@@ -111,8 +124,6 @@ $auth = new Auth();
 
 /* Safe HTML module Init */
 $safe = new SafeHTML();
-
-define('CONTENTS', false);
 
 /* Revolver Menu templater Init */
 $menu = new Menu();
@@ -128,6 +139,29 @@ $vars = new Variables();
 
 $mail = new Mail();
 
-require_once(SKIN);
+
+// render site
+if( $not_found &&  $_SERVER['REQUEST_URI'] !== '/' ) {
+
+	$edit_path_check = explode('/', $_SERVER['REQUEST_URI']);
+
+	if( $edit_path_check[ count($edit_path_check) - 2 ] === 'edit' ) {
+
+		require_once('./skins/'. SKIN .'/index.php');
+
+	} 
+	else {
+	
+		require_once( './skins/'. SKIN .'/404.php');
+	
+	}
+
+} 
+else {
+
+	require_once('./skins/'. SKIN .'/index.php');
+
+}
+
 
 ?>
