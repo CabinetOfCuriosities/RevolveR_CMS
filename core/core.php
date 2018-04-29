@@ -88,9 +88,12 @@ if( strlen($dbConfig) > 0 ) {
 					define('TITLE', $v['field_site_title']);
 				}
 
-
 				if( !empty($v['field_site_description']) ) {
 					define('DESCRIPTION', $v['field_site_description']);
+				}
+
+				if( !empty($v['field_site_skin']) ) {
+					define('SKIN', './skins/'. $v['field_site_skin'] .'/index.php');
 				}
 
 			}
@@ -101,7 +104,6 @@ if( strlen($dbConfig) > 0 ) {
 else {
 	define('INSTALLED', false);
 }
-
 
 /* Connect authorization module */
 $auth = new Auth();
@@ -125,11 +127,8 @@ $vars = new Variables();
 
 $mail = new Mail();
 
+// Site render
+$skins = scandir('./skins/', 1);
+require_once(SKIN);
 
-chmod('/private/key.ini', 644);
 ?>
-
-
-
-
-

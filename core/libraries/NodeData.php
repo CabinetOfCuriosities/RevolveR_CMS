@@ -634,6 +634,8 @@ switch( ROUTE['node'] ) {
 					$STRUCT_SITE['field_site_brand']['value'] = 'CyberX';
 					$STRUCT_SITE['field_site_title']['value'] = 'RevolveR CMS';
 					$STRUCT_SITE['field_site_description']['value'] = 'Revolver CMS homepage';
+					
+					$STRUCT_SITE['field_site_skin']['value'] = 'revolver core template';
 
 					$dbx::query('i', 'revolver__settings', $STRUCT_SITE);
 
@@ -680,27 +682,6 @@ switch( ROUTE['node'] ) {
 
 		unset( $dbx::$result['result'] );
 
-		// test
-		/*
-
-		$dbx::query('s', 'revolver__settings', $STRUCT_SITE);
-
-		print '<pre>';
-		print_r( $dbx::$result );
-		print '</pre>';
-
-		if( !isset($dbx::$result['result']) ) {
-			$dbx::query('c', 'revolver__settings', $STRUCT_SITE); // create if now exist
-
-			$STRUCT_SITE['field_id']['value'] = 0;
-			$STRUCT_SITE['field_site_brand']['value'] = 'CyberX';
-			$STRUCT_SITE['field_site_title']['value'] = 'RevolveR CMS';
-			$STRUCT_SITE['field_site_description']['value'] = 'Revolver CMS homepage';
-
-			$dbx::query('i', 'revolver__settings', $STRUCT_SITE);
-		} 
-		*/
-
 
 		if( count($vars::getVars()) > 0 ) {		
 			foreach ($vars::getVars() as $k) {
@@ -717,23 +698,31 @@ switch( ROUTE['node'] ) {
 					$homepage_description = $k['revolver_site_settings_homepage_description'];
 				}
 
+				if( isset($k['revolver_site_settings_skin']) ) {
+					$active_skin = $k['revolver_site_settings_skin'];
+				}
+
 			}
 
 			$STRUCT_SITE_1['field_site_brand']['new_value'] = $logotype;
 			$STRUCT_SITE_2['field_site_title']['new_value'] = $homepage_title;
 			$STRUCT_SITE_3['field_site_description']['new_value'] = $homepage_description;
+			$STRUCT_SITE_4['field_site_skin']['new_value'] = $active_skin;
 
 			$STRUCT_SITE_1['field_site_brand']['criterion_field'] = 'field_id';
 			$STRUCT_SITE_2['field_site_title']['criterion_field'] = 'field_id';
 			$STRUCT_SITE_3['field_site_description']['criterion_field'] = 'field_id';
+			$STRUCT_SITE_4['field_site_skin']['criterion_field'] = 'field_id';
 
 			$STRUCT_SITE_1['field_site_brand']['criterion_value'] = 1;
 			$STRUCT_SITE_2['field_site_title']['criterion_value'] = 1;
 			$STRUCT_SITE_3['field_site_description']['criterion_value'] = 1;
+			$STRUCT_SITE_4['field_site_skin']['criterion_value'] = 1;
 
 			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_1);
 			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_2);
 			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_3);
+			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_4);
 			
 		}
 
@@ -754,6 +743,33 @@ switch( ROUTE['node'] ) {
 		 	$contents .= '<label>Homepage meta description:';
 		 	$contents .= '<input name="revolver_site_settings_homepage_description" type="text" placeholder="homepage description text" value="'. $v['field_site_description'] .'" />';
 		 	$contents .= '</fieldset>';
+		 	$contents .= '<fieldset>';
+		 	$contents .= '<legend>Other site settings:</legend>';
+		 	$contents .= '<label>Site skin(template render):';
+		 	$contents .= '&nbsp;&nbsp;<select name="revolver_site_settings_skin">';
+
+			$skins = scandir('./skins/', 1);
+			if( count($skins > 0) ) {
+				foreach ($skins as $skin) {
+					if( $skin !== '.DS_Store' ) {
+						if( $skin !== '.' ) {
+							if( $skin !== '..' ) {
+
+								if(  $v['field_site_skin'] === $skin ) {
+									$contents .= '<option value="'. $skin .'" selected>'. $skin .'</option>';
+								} 
+								else {
+									$contents .= '<option value="'. $skin .'">'. $skin .'</option>';
+								}
+								
+							}
+						}
+					}
+				}
+			}
+		 				
+			$contents .= '</select>';
+		 	$contents .= '</fieldset>';		 	
 		 	$contents .= '<input type="submit" value="Submit" />';
 		 	$contents .= '</form>';
 

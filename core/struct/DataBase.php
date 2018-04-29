@@ -34,6 +34,11 @@ $STRUCT_SITE = [
 		'length' => 255,
 		'fill'   => true
 	],
+	'field_site_skin' => [
+		'type'	 => 'text',
+		'length' => 50,
+		'fill'   => true
+	],
 ];
 
 $STRUCT_USER = [
