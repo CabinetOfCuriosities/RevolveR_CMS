@@ -60,37 +60,44 @@
 		}
 
 		const resultpane = document.querySelectorAll('#resultpane')[0];
-		
-		// drawResult 
-		function drawResult(m) {
 
-			//console.log( m );
+		if( resultpane ) {
 
-			let context = resultpane.getContext("2d");
+			// drawResult 
+			function drawResult(m) {
 
-			function go(e, i) {
+				//console.log( m );
 
-				let sectorData = e.split(':');
+				let context = resultpane.getContext("2d");
 
-				let style = sectorData[0] == 1 ? "#000000" : "#90c4b8";
+				function go(e, i) {
 
-				context.fillStyle = style;
-				context.fillRect(sectorData[1], sectorData[2], 24, 24);
-				context.stroke();
+					let sectorData = e.split(':');
+
+					let style = sectorData[0] == 1 ? "#000000" : "#90c4b8";
+
+					context.fillStyle = style;
+					context.fillRect(sectorData[1], sectorData[2], 24, 24);
+					context.stroke();
+
+				}
+
+				m.forEach(go);
 
 			}
 
-			m.forEach(go);
+			drawResult(pattern_0.split('|'));
 
 		}
-
-		drawResult(pattern_0.split('|'));
+		
 	}
 
 	// Live loading
     function fetchRouteLive() {
 
-    	renderCaptcha( $.dom('meta[name="captcha"]')[0].content );
+		$.fetch('/secure.php','GET','json', function(){ 
+			renderCaptcha( this.key );
+		}); 
 
 		$.event('a', 'click', function(e) {
 
@@ -127,8 +134,6 @@
 				$.attr('input[name="revolver_captcha"]', {'value': window.pattern_id +'*'+ patterns_match } );
 
 			}
-
-			console.log( $.dom('input[name="revolver_captcha"]') );
 
 			// full dynamic forms
 			$.fetchSubmit('form', 'text', function() {

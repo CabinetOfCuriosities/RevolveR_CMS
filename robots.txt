@@ -17,3 +17,6 @@ Disallow: /core/libararies/
 Disallow: /core/templates/
 Disallow: /core/struct/
 Disallow: /private/
+
+# secure route
+Disallow: /secure.php

@@ -28,6 +28,13 @@ RewriteRule ^(.*[^/])$ $1/ [L,R=301]
     Allow from all
 </Files>
 
+# Allow secure router
+<Files secure.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+
 # Disable directory browsing
 Options All -Indexes
 
