@@ -12,7 +12,85 @@
     // charging weapons with namespace
     const RevolveR_CMS = new Revolver('$');
 
+	function renderCaptcha(captcha_new) {
+		
+		let pattern = captcha_new ? captcha_new : window.captcha_data;
+
+		const pattern_id = pattern.split('*')[0];
+		const pattern_0  = pattern.split('*')[1];
+
+		window.pattern_id = pattern_id;
+
+		const drawpane = document.querySelectorAll('#drawpane')[0];
+		const sectors = document.querySelectorAll('#drawpane div');
+
+		window.flag = false;
+
+		for(let i of sectors) {
+
+			i.addEventListener('click', function(e){
+
+				e.preventDefault();
+
+				if(!window.flag) {
+
+					let sec = 0;
+
+					function pad ( val ) { 
+						return val > 9 ? val : "0" + val; 
+					}
+
+				}
+
+				window.flag = true;
+
+				let state = this.dataset.selected;
+
+				if( state !== 'true' ) {
+					this.className = 'active';
+					this.dataset.selected = 'true';
+				} 
+				else {
+					this.className = '';
+					this.dataset.selected = 'false';
+				}
+
+			});
+
+		}
+
+		const resultpane = document.querySelectorAll('#resultpane')[0];
+		
+		// drawResult 
+		function drawResult(m) {
+
+			//console.log( m );
+
+			let context = resultpane.getContext("2d");
+
+			function go(e, i) {
+
+				let sectorData = e.split(':');
+
+				let style = sectorData[0] == 1 ? "#000000" : "#90c4b8";
+
+				context.fillStyle = style;
+				context.fillRect(sectorData[1], sectorData[2], 24, 24);
+				context.stroke();
+
+			}
+
+			m.forEach(go);
+
+		}
+
+		drawResult(pattern_0.split('|'));
+	}
+
+	// Live loading
     function fetchRouteLive() {
+
+    	renderCaptcha( $.dom('meta[name="captcha"]')[0].content );
 
 		$.event('a', 'click', function(e) {
 
@@ -25,38 +103,64 @@
 			window.open(e.target.href);
 		});
 
+		$.event('input[type="submit"]', 'click', function() {
 
-		// full dynamic forms
-		$.fetchSubmit('form', 'text', function() {
+			const sectors = $.dom('#drawpane div');
 
-			$.dom('#RevolverRoot')[0].innerHTML = '';
-			
-			for( let i of $.convertSTRToHTML(this) ) {
+			if( window.flag ) {
 
-				if( i.tagName === 'TITLE' ) {
-					var title = i.innerHTML;
+				let matrix = [];
+				let counter = 0;
+
+				for( let a of sectors ) {
+
+					let coords = a.dataset.xy;
+					let state = a.dataset.selected === 'true' ? 1 : 0;
+
+					matrix[counter] = state +':'+ coords;
+					counter++;
+
 				}
-				if ( i.id === 'RevolverRoot' ) {
-					var shell = i.innerHTML;
-				}
-				// snizzy hack
-				if( i.tagName === 'META') {
-					if( i.name === 'host') {
-						eval( 'window.route="'+ i.content +'";' );
-					}
-				}
+
+				const patterns_match = matrix.join('|');
+
+				$.attr('input[name="revolver_captcha"]', {'value': window.pattern_id +'*'+ patterns_match } );
+
 			}
 
-			$.insert($.dom('#RevolverRoot'), shell);
-			
-			$.location(title, route);
-			
-			$.scroll();
+			console.log( $.dom('input[name="revolver_captcha"]') );
 
-			fetchRouteLive();
+			// full dynamic forms
+			$.fetchSubmit('form', 'text', function() {
 
+				$.dom('#RevolverRoot')[0].innerHTML = '';
+				
+				for( let i of $.convertSTRToHTML(this) ) {
+
+					if( i.tagName === 'TITLE' ) {
+						var title = i.innerHTML;
+					}
+					if ( i.id === 'RevolverRoot' ) {
+						var shell = i.innerHTML;
+					}
+					// snizzy hack
+					if( i.tagName === 'META') {
+						if( i.name === 'host') {
+							eval( 'window.route="'+ i.content +'";' );
+						}
+					}
+				}
+
+				$.insert($.dom('#RevolverRoot'), shell);
+				
+				$.location(title, route);
+				
+				$.scroll();
+
+				fetchRouteLive();
+
+			});
 		});
-
 
 		// full dynamic fetch router
 		function getPageLive(url, title) {
@@ -101,6 +205,7 @@
 
     // run live
     fetchRouteLive();
+
 </script>
 
 <?php 

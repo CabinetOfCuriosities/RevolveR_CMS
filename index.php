@@ -9,6 +9,7 @@ require_once('./private/config.php');
 require_once('./core/struct/DataBase.php');
 
 // Libraries
+require_once('./core/libraries/Captcha.php');
 require_once('./core/libraries/DBX.php');
 require_once('./core/libraries/Cipher.php');
 require_once('./core/libraries/SafeHTML.php');

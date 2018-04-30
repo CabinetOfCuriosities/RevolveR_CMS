@@ -8,6 +8,58 @@ body {
 	margin: 0 auto;
 }
 
+/* Revolver Captcha */
+.revolver__captcha {
+	display: table;
+}
+
+.revolver__captcha-td {
+	display: table-cell;
+	vertical-align: middle;
+	width: 30%;
+	height: 130px;
+}
+
+.revolver__captcha-td label {
+	display: inline-block;
+	width: 120px;
+	height: 130px;
+	float: left;
+	margin-right: 20px;
+}
+
+.revolver__captcha-pattern {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.revolver__captcha #drawpane {
+	width: 101px;
+	height: 101px;
+	display: inline-block;
+}
+
+.revolver__captcha canvas {
+	width: 101px;
+	height: 101px;
+	display: inline-block;
+}
+
+.revolver__captcha #drawpane div {
+	width: 22px;
+	height: 20px;
+	background: #90c4b8;
+	display: inline-block;
+	cursor: pointer;
+	margin-right: 1px;
+	margin-bottom: 1px;
+}
+
+.revolver__captcha #drawpane .active {
+	background: #000;
+}
+
 /* RevolveR :: status */
 .revolver__warning {
 	color: #f00000 !important;

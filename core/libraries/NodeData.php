@@ -113,12 +113,23 @@ switch( ROUTE['node'] ) {
 										$struct_2['field_time']['criterion_value'] = $k['revolver_comment_id'];
 
 									}
+
+									if(isset($k['revolver_captcha'])) {
+
+										$captcha_data = explode( '*' , $k['revolver_captcha'] );
+										if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+											define('form_pass', 'pass');
+										}
+
+									}
+
+
 								}
 
 
 								if( $action === 'edit' ) {
 
-									if( $advanced_action === 'delete' ) {
+									if( $advanced_action === 'delete' && form_pass === 'pass' ) {
 					
 										$dbx::query('x', 'revolver__comments', $struct_1);
 										header('Location: '. site_host);
@@ -126,19 +137,26 @@ switch( ROUTE['node'] ) {
 									} 
 									else {
 
-										$dbx::query('u', 'revolver__comments', $struct_1);
-										$dbx::query('u', 'revolver__comments', $struct_2);
-										$dbx::query('u', 'revolver__comments', $struct_5);
+										if( form_pass === 'pass' ) {
+
+											$dbx::query('u', 'revolver__comments', $struct_1);
+											$dbx::query('u', 'revolver__comments', $struct_2);
+											$dbx::query('u', 'revolver__comments', $struct_5);
+										
+										}
 									
 									}
 
 								} 
 								else {
 
-									$STRUCT_COMMENTS['field_id']['value'] = 0;
-									if( $counter <= 0 ) {
-										$dbx::query('i', 'revolver__comments', $STRUCT_COMMENTS);	
+									if( form_pass === 'pass' ) {
+										$STRUCT_COMMENTS['field_id']['value'] = 0;
+										if( $counter <= 0 ) {
+											$dbx::query('i', 'revolver__comments', $STRUCT_COMMENTS);	
+										}										
 									}
+
 								}
 
 							}
@@ -243,15 +261,23 @@ switch( ROUTE['node'] ) {
 
 													}
 
-													if( isset($k['revolver_node_edit_delete']) ) {
+													if( !isset($k['revolver_node_edit_delete']) ) {
 														$action = 'delete';
 													} 
 													else {
 														$action = 'update';
 													}
 
-												}
+													if(isset($k['revolver_captcha'])) {
 
+														$captcha_data = explode( '*' , $k['revolver_captcha'] );
+														if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+															define('form_pass', 'pass');
+														}
+
+													}
+
+												}
 
 												if( $action === 'update' ) {
 
@@ -295,7 +321,7 @@ switch( ROUTE['node'] ) {
 														$struct_4['field_route']['new_value'] = '/'. $route_fix .'/';
 
 
-														if( $passed ) {
+														if( $passed && form_pass === 'pass' ) {
 
 															$dbx::query('u', 'revolver__nodes', $struct_1);
 															$dbx::query('u', 'revolver__nodes', $struct_2);
@@ -307,7 +333,7 @@ switch( ROUTE['node'] ) {
 
 														} 
 														else {
-															$node_data[$counter]['warning'] = '<p class="revolver__warning">Defined route exist. Please change other route.</p>';
+															$node_data[$counter]['warning'] = '<p class="revolver__warning">Defined route exist. Please change other route or check captcha.</p>';
 														}
 													}	
 												
@@ -317,16 +343,28 @@ switch( ROUTE['node'] ) {
 													if( count($vars::getVars()) > 0 ) {
 														foreach ($vars::getVars() as $k) {
 
+															if(isset($k['revolver_captcha'])) {
+
+																$captcha_data = explode( '*' , $k['revolver_captcha'] );
+																if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+																	define('form_pass', 'pass');
+																}
+
+															}
+
 															if( $k['revolver_node_edit_id'] === $node['field_id']) {
 
-																$struct_1['field_id']['value'] = $k['revolver_node_edit_id'];
-																$struct_1['field_title']['criterion_field'] = 'field_id';
-																$struct_1['field_title']['criterion_value'] = $node['field_id'];
+																if( form_pass === 'pass' ) {
 
-																$dbx::query('x', 'revolver__nodes', $struct_1);
-															
-																header('Location: '. site_host );
+																	$struct_1['field_id']['value'] = $k['revolver_node_edit_id'];
+																	$struct_1['field_title']['criterion_field'] = 'field_id';
+																	$struct_1['field_title']['criterion_value'] = $node['field_id'];
+
+																	$dbx::query('x', 'revolver__nodes', $struct_1);
 																
+																	header('Location: '. site_host );
+
+																} 
 															}
 														}
 													}
@@ -387,6 +425,16 @@ switch( ROUTE['node'] ) {
 						if( isset($k['revolver_node_edit_category']) ) {
 							$STRUCT_NODES['field_category']['value'] = $k['revolver_node_edit_category']; 
 						}
+
+						if(isset($k['revolver_captcha'])) {
+
+							$captcha_data = explode( '*' , $k['revolver_captcha'] );
+							if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+								define('form_pass', 'pass');
+							}
+
+						}
+
 					}
 				
 					$STRUCT_NODES['field_user']['value'] = $token_explode[2];
@@ -424,7 +472,7 @@ switch( ROUTE['node'] ) {
 					$STRUCT_NODES['field_route']['value'] = '/'. $route_fix .'/';
 
 
-					if( $passed ) {
+					if( $passed && form_pass === 'pass') {
 
 						$dbx::query('i', 'revolver__nodes', $STRUCT_NODES);
 						header('Location: '. site_host . $STRUCT_NODES['field_route']['value']);
@@ -432,7 +480,7 @@ switch( ROUTE['node'] ) {
 					} 
 					else {
 						
-						$contents = '<p class="revolver__warning">Carefully check route path! It need to be accessible with pattern <i>/way/way/</i>.</p>';
+						$contents = '<p class="revolver__warning">Carefully check route path or captcha wrong! It need to be accessible with pattern <i>/way/way/</i>.</p>';
 					}
 
 
@@ -472,6 +520,37 @@ switch( ROUTE['node'] ) {
 			 	$contents .= '</select>';
 			 	$contents .= '</label>';
 			 	$contents .= '</fieldset>';
+				$contents .= '<fieldset>';
+				$contents .= '<legend>Lets draw:</legend>';
+				$contents .= '<!-- captcha -->';
+				$contents .= '<div class="revolver__captcha"><div class="revolver__captcha-td">';
+				$contents .= '<label>Pattern:<div class="revolver__captcha-pattern">';
+				$contents .= '<canvas id="resultpane" width="101" height="101"></canvas>';
+				$contents .= '</div></label>';
+				$contents .= '<label>Your input:<div class="revolver__captcha-pattern">';
+				$contents .= '<section id="drawpane">';
+				$contents .= '<div id="pane-1-1" data-selected="false" data-xy="0:0"></div>';
+				$contents .= '<div id="pane-1-2" data-selected="false" data-xy="25:0"></div>';
+				$contents .= '<div id="pane-1-3" data-selected="false" data-xy="50:0"></div>';
+				$contents .= '<div id="pane-1-4" data-selected="false" data-xy="75:0"></div>';
+				$contents .= '<div id="pane-2-1" data-selected="false" data-xy="0:25"></div>';
+				$contents .= '<div id="pane-2-2" data-selected="false" data-xy="25:25"></div>';
+				$contents .= '<div id="pane-2-3" data-selected="false" data-xy="50:25"></div>';
+				$contents .= '<div id="pane-2-4" data-selected="false" data-xy="75:25"></div>';
+				$contents .= '<div id="pane-3-1" data-selected="false" data-xy="0:50"></div>';
+				$contents .= '<div id="pane-3-2" data-selected="false" data-xy="25:50"></div>';
+				$contents .= '<div id="pane-3-3" data-selected="false" data-xy="50:50"></div>';
+				$contents .= '<div id="pane-3-4" data-selected="false" data-xy="75:50"></div>';
+				$contents .= '<div id="pane-4-1" data-selected="false" data-xy="0:75"></div>';
+				$contents .= '<div id="pane-4-2" data-selected="false" data-xy="25:75"></div>';
+				$contents .= '<div id="pane-4-3" data-selected="false" data-xy="50:75"></div>';
+				$contents .= '<div id="pane-4-4" data-selected="false" data-xy="75:75"></div>';
+				$contents .= '</section>';
+				$contents .= '</div></label>';
+				$contents .= '</div></div>';
+				$contents .= '<!-- #captcha -->';
+				$contents .= '<input type="hidden" name="revolver_captcha" value="">';
+				$contents .= '</fieldset>';
 			 	$contents .= '<input type="submit" value="Submit" />';
 			 	$contents .= '</form>';
 
@@ -856,12 +935,20 @@ switch( ROUTE['node'] ) {
 						$STRUCT_CATEGORIES['field_description']['value'] = $k['revolver_category_description'];
 					}
 
+					if(isset($k['revolver_captcha'])) {
 
+						$captcha_data = explode( '*' , $k['revolver_captcha'] );
+						if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+							define('form_pass', 'pass');
+						}
+
+					}
 				}
 
-				$STRUCT_CATEGORIES['field_id']['value'] = 0;
-
-				$dbx::query('i', 'revolver__categories', $STRUCT_CATEGORIES);
+				if( form_pass === 'pass' ) {
+					$STRUCT_CATEGORIES['field_id']['value'] = 0;
+					$dbx::query('i', 'revolver__categories', $STRUCT_CATEGORIES);
+				}	
 
 			}
 
@@ -875,6 +962,37 @@ switch( ROUTE['node'] ) {
 		 	$contents .= '<input name="revolver_category_description" type="text" placeholder="Type category description" required />';
 		 	$contents .= '</label>';
 		 	$contents .= '</fieldset>';
+			$contents .= '<fieldset>';
+			$contents .= '<legend style="width: 40%">Lets draw:</legend>';
+			$contents .= '<!-- captcha -->';
+			$contents .= '<div class="revolver__captcha"><div class="revolver__captcha-td">';
+			$contents .= '<label>Pattern:<div class="revolver__captcha-pattern">';
+			$contents .= '<canvas id="resultpane" width="101" height="101"></canvas>';
+			$contents .= '</div></label>';
+			$contents .= '<label>Your input:<div class="revolver__captcha-pattern">';
+			$contents .= '<section id="drawpane">';
+			$contents .= '<div id="pane-1-1" data-selected="false" data-xy="0:0"></div>';
+			$contents .= '<div id="pane-1-2" data-selected="false" data-xy="25:0"></div>';
+			$contents .= '<div id="pane-1-3" data-selected="false" data-xy="50:0"></div>';
+			$contents .= '<div id="pane-1-4" data-selected="false" data-xy="75:0"></div>';
+			$contents .= '<div id="pane-2-1" data-selected="false" data-xy="0:25"></div>';
+			$contents .= '<div id="pane-2-2" data-selected="false" data-xy="25:25"></div>';
+			$contents .= '<div id="pane-2-3" data-selected="false" data-xy="50:25"></div>';
+			$contents .= '<div id="pane-2-4" data-selected="false" data-xy="75:25"></div>';
+			$contents .= '<div id="pane-3-1" data-selected="false" data-xy="0:50"></div>';
+			$contents .= '<div id="pane-3-2" data-selected="false" data-xy="25:50"></div>';
+			$contents .= '<div id="pane-3-3" data-selected="false" data-xy="50:50"></div>';
+			$contents .= '<div id="pane-3-4" data-selected="false" data-xy="75:50"></div>';
+			$contents .= '<div id="pane-4-1" data-selected="false" data-xy="0:75"></div>';
+			$contents .= '<div id="pane-4-2" data-selected="false" data-xy="25:75"></div>';
+			$contents .= '<div id="pane-4-3" data-selected="false" data-xy="50:75"></div>';
+			$contents .= '<div id="pane-4-4" data-selected="false" data-xy="75:75"></div>';
+			$contents .= '</section>';
+			$contents .= '</div></label>';
+			$contents .= '</div></div>';
+			$contents .= '<!-- #captcha -->';
+			$contents .= '<input type="hidden" name="revolver_captcha" value="">';
+			$contents .= '</fieldset>';
 		 	$contents .= '<input type="submit" value="Submit" />';
 		 	$contents .= '</form>';
 		}
@@ -956,6 +1074,37 @@ switch( ROUTE['node'] ) {
 		 	$contents .= '<input name="revolver_login_user_password" type="password" placeholder="user password" />';
 		 	$contents .= '</label>';
 		 	$contents .= '</fieldset>';
+		 	$contents .= '<fieldset>';
+		 	$contents .= '<legend style="width: 40%">Lets draw:</legend>';
+			$contents .= '<!-- captcha -->';
+			$contents .= '<div class="revolver__captcha"><div class="revolver__captcha-td">';
+			$contents .= '<label>Pattern:<div class="revolver__captcha-pattern">';
+			$contents .= '<canvas id="resultpane" width="101" height="101"></canvas>';
+			$contents .= '</div></label>';
+			$contents .= '<label>Your input:<div class="revolver__captcha-pattern">';
+			$contents .= '<section id="drawpane">';
+			$contents .= '<div id="pane-1-1" data-selected="false" data-xy="0:0"></div>';
+			$contents .= '<div id="pane-1-2" data-selected="false" data-xy="25:0"></div>';
+			$contents .= '<div id="pane-1-3" data-selected="false" data-xy="50:0"></div>';
+			$contents .= '<div id="pane-1-4" data-selected="false" data-xy="75:0"></div>';
+			$contents .= '<div id="pane-2-1" data-selected="false" data-xy="0:25"></div>';
+			$contents .= '<div id="pane-2-2" data-selected="false" data-xy="25:25"></div>';
+			$contents .= '<div id="pane-2-3" data-selected="false" data-xy="50:25"></div>';
+			$contents .= '<div id="pane-2-4" data-selected="false" data-xy="75:25"></div>';
+			$contents .= '<div id="pane-3-1" data-selected="false" data-xy="0:50"></div>';
+			$contents .= '<div id="pane-3-2" data-selected="false" data-xy="25:50"></div>';
+			$contents .= '<div id="pane-3-3" data-selected="false" data-xy="50:50"></div>';
+			$contents .= '<div id="pane-3-4" data-selected="false" data-xy="75:50"></div>';
+			$contents .= '<div id="pane-4-1" data-selected="false" data-xy="0:75"></div>';
+			$contents .= '<div id="pane-4-2" data-selected="false" data-xy="25:75"></div>';
+			$contents .= '<div id="pane-4-3" data-selected="false" data-xy="50:75"></div>';
+			$contents .= '<div id="pane-4-4" data-selected="false" data-xy="75:75"></div>';
+			$contents .= '</section>';
+			$contents .= '</div></label>';
+			$contents .= '</div></div>';
+			$contents .= '<!-- #captcha -->';
+			$contents .= '<input type="hidden" name="revolver_captcha" value="">';
+			$contents .= '</fieldset>';
 		 	$contents .= '<input type="submit" value="Submit" /><input type="reset" />';
 		 	$contents .= '</form>';
 
@@ -1013,7 +1162,16 @@ switch( ROUTE['node'] ) {
 					if(isset($k['revolver_login_user_password'])) {
 						$pass = $cipher::crypt('encrypt', $k['revolver_login_user_password'] );
 					}
-				
+
+					if(isset($k['revolver_captcha'])) {
+
+						$captcha_data = explode( '*' , $k['revolver_captcha'] );
+						if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+							define('form_pass', 'pass');
+						}
+
+					} 
+			
 				}
 
 				$dbx::query('s|field_id|asc', 'revolver__users', $STRUCT_USER);
@@ -1028,10 +1186,12 @@ switch( ROUTE['node'] ) {
 							// secure session
 							$token = $cipher::crypt('encrypt', (string)$user['field_email'] .'|'. (string)$user['field_password'] .'|'.  (string)$user['field_nickname']);
 
-							$auth::login($token);
-							
-							header('Location: '. site_host . '/');
-						
+							if( form_pass === 'pass' ) {
+								
+								$auth::login($token);
+								header('Location: '. site_host . '/');
+
+							}					
 						}
 					} 
 				}
@@ -1062,6 +1222,37 @@ switch( ROUTE['node'] ) {
 		 	$contents .= '<input name="revolver_recovery_user_email" type="email" placeholder="user email" />';
 		 	$contents .= '</label>';
 		 	$contents .= '</fieldset>';
+			$contents .= '<fieldset>';
+			$contents .= '<legend style="width: 40%">Lets draw:</legend>';
+			$contents .= '<!-- captcha -->';
+			$contents .= '<div class="revolver__captcha"><div class="revolver__captcha-td">';
+			$contents .= '<label>Pattern:<div class="revolver__captcha-pattern">';
+			$contents .= '<canvas id="resultpane" width="101" height="101"></canvas>';
+			$contents .= '</div></label>';
+			$contents .= '<label>Your input:<div class="revolver__captcha-pattern">';
+			$contents .= '<section id="drawpane">';
+			$contents .= '<div id="pane-1-1" data-selected="false" data-xy="0:0"></div>';
+			$contents .= '<div id="pane-1-2" data-selected="false" data-xy="25:0"></div>';
+			$contents .= '<div id="pane-1-3" data-selected="false" data-xy="50:0"></div>';
+			$contents .= '<div id="pane-1-4" data-selected="false" data-xy="75:0"></div>';
+			$contents .= '<div id="pane-2-1" data-selected="false" data-xy="0:25"></div>';
+			$contents .= '<div id="pane-2-2" data-selected="false" data-xy="25:25"></div>';
+			$contents .= '<div id="pane-2-3" data-selected="false" data-xy="50:25"></div>';
+			$contents .= '<div id="pane-2-4" data-selected="false" data-xy="75:25"></div>';
+			$contents .= '<div id="pane-3-1" data-selected="false" data-xy="0:50"></div>';
+			$contents .= '<div id="pane-3-2" data-selected="false" data-xy="25:50"></div>';
+			$contents .= '<div id="pane-3-3" data-selected="false" data-xy="50:50"></div>';
+			$contents .= '<div id="pane-3-4" data-selected="false" data-xy="75:50"></div>';
+			$contents .= '<div id="pane-4-1" data-selected="false" data-xy="0:75"></div>';
+			$contents .= '<div id="pane-4-2" data-selected="false" data-xy="25:75"></div>';
+			$contents .= '<div id="pane-4-3" data-selected="false" data-xy="50:75"></div>';
+			$contents .= '<div id="pane-4-4" data-selected="false" data-xy="75:75"></div>';
+			$contents .= '</section>';
+			$contents .= '</div></label>';
+			$contents .= '</div></div>';
+			$contents .= '<!-- #captcha -->';
+			$contents .= '<input type="hidden" name="revolver_captcha" value="">';
+			$contents .= '</fieldset>';
 		 	$contents .= '<input type="submit" value="Submit" />';
 		 	$contents .= '</form>';
 
@@ -1073,35 +1264,44 @@ switch( ROUTE['node'] ) {
 						$STRUCT_USER['field_email'] = $k['revolver_recovery_user_email'];
 					}
 
+					if(isset($k['revolver_captcha'])) {
+
+						$captcha_data = explode( '*' , $k['revolver_captcha'] );
+						if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+							define('form_pass', 'pass');
+						}
+
+					}
+
 				}
 
 				$dbx::query('s|field_id|asc', 'revolver__users', $STRUCT_USER);
 				$users = $dbx::$result['result'];
 				unset($dbx::$result['result']);
 
+				$counter = 0;
+
 				foreach( $users as $user ) {
 
 					if( (string)$user['field_email'] === (string)$recovery_email ) {
-						$recovery_password = $cipher::crypt( 'decrypt', $user['field_password'] );
 
-						$message = 'To sign in use Email: '. $recovery_email .' and Password: '. $recovery_password;
+						if( form_pass === 'pass' && $counter === 0) {
 
-						$mail::send($recovery_email, 'RevolveR CMS :: Account recovery system', $message);
+							$recovery_password = $cipher::crypt( 'decrypt', $user['field_password'] );
+							$message = 'To sign in use Email: '. $recovery_email .' and Password: '. $recovery_password;
+							$mail::send($recovery_email, 'RevolveR CMS :: Account recovery system', $message);
+							$contents = '<p>Your Account successfully recovered! Check your email.</p>';
+						}
 
-						$contents = '<p>Your Account successfully recovered! Check your email.</p>';
-
+						$counter++;
 
 					} 
 					else {
 
 						$contents = '<p class="revolver__warning">Account not recovered! Unable to find user with this email.</p>' . $contents;
 					}
-
 				}
-
-
 			}
-
 		}
 
 
@@ -1126,7 +1326,37 @@ switch( ROUTE['node'] ) {
 		 	$contents .= '<input name="revolver_registration_password_confirm" type="password" placeholder="Confirm user password" />';
 		 	$contents .= '</label>';
 		 	$contents .= '</fieldset>';
-
+			$contents .= '<fieldset>';
+			$contents .= '<legend style="width: 40%">Lets draw:</legend>';
+			$contents .= '<!-- captcha -->';
+			$contents .= '<div class="revolver__captcha"><div class="revolver__captcha-td">';
+			$contents .= '<label>Pattern:<div class="revolver__captcha-pattern">';
+			$contents .= '<canvas id="resultpane" width="101" height="101"></canvas>';
+			$contents .= '</div></label>';
+			$contents .= '<label>Your input:<div class="revolver__captcha-pattern">';
+			$contents .= '<section id="drawpane">';
+			$contents .= '<div id="pane-1-1" data-selected="false" data-xy="0:0"></div>';
+			$contents .= '<div id="pane-1-2" data-selected="false" data-xy="25:0"></div>';
+			$contents .= '<div id="pane-1-3" data-selected="false" data-xy="50:0"></div>';
+			$contents .= '<div id="pane-1-4" data-selected="false" data-xy="75:0"></div>';
+			$contents .= '<div id="pane-2-1" data-selected="false" data-xy="0:25"></div>';
+			$contents .= '<div id="pane-2-2" data-selected="false" data-xy="25:25"></div>';
+			$contents .= '<div id="pane-2-3" data-selected="false" data-xy="50:25"></div>';
+			$contents .= '<div id="pane-2-4" data-selected="false" data-xy="75:25"></div>';
+			$contents .= '<div id="pane-3-1" data-selected="false" data-xy="0:50"></div>';
+			$contents .= '<div id="pane-3-2" data-selected="false" data-xy="25:50"></div>';
+			$contents .= '<div id="pane-3-3" data-selected="false" data-xy="50:50"></div>';
+			$contents .= '<div id="pane-3-4" data-selected="false" data-xy="75:50"></div>';
+			$contents .= '<div id="pane-4-1" data-selected="false" data-xy="0:75"></div>';
+			$contents .= '<div id="pane-4-2" data-selected="false" data-xy="25:75"></div>';
+			$contents .= '<div id="pane-4-3" data-selected="false" data-xy="50:75"></div>';
+			$contents .= '<div id="pane-4-4" data-selected="false" data-xy="75:75"></div>';
+			$contents .= '</section>';
+			$contents .= '</div></label>';
+			$contents .= '</div></div>';
+			$contents .= '<!-- #captcha -->';
+			$contents .= '<input type="hidden" name="revolver_captcha" value="">';
+			$contents .= '</fieldset>';
 		 	$contents .= '<input type="submit" value="Submit" /><input type="reset" />';
 		 	$contents .= '</form>';
 
@@ -1150,6 +1380,15 @@ switch( ROUTE['node'] ) {
 						$user_data_password_confirm = $k['revolver_registration_password_confirm'];
 					}
 
+					if(isset($k['revolver_captcha'])) {
+
+						$captcha_data = explode( '*' , $k['revolver_captcha'] );
+						if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+							define('form_pass', 'pass');
+						}
+
+					}
+
 				}
 
 				if( strlen($user_data_name) >= 4 && strlen($user_data_email) > 0 && strlen($user_data_password) > 5 && strlen($user_data_password_confirm) > 5 ) {
@@ -1171,7 +1410,7 @@ switch( ROUTE['node'] ) {
 							}
 						}
 
-						if( $passed ) {
+						if( $passed &&  form_pass === 'pass' ) {
 							
 							$dbx::query('i', 'revolver__users', $STRUCT_USER);
 							
@@ -1182,7 +1421,7 @@ switch( ROUTE['node'] ) {
 						else {
 
 							$title = 'Account not created!';
-							$contents = '<p>Account with email '. $user_data_email .' already exist! <a title="Repeat registration" href="/user/register/">Try another email</a> or do <a title="Account recovery page" href="/user/recovery/">account recovery</a> if it\'s yours!</p>';
+							$contents = '<p>Account with email '. $user_data_email .' already exist or captcha\'s data wrong! <a title="Repeat registration" href="/user/register/">Try another email</a> or do <a title="Account recovery page" href="/user/recovery/">account recovery</a> if it\'s yours!</p>';
 
 						}
 					}

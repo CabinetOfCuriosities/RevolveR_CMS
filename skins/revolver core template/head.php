@@ -30,7 +30,9 @@ $site_data = site_host . $_SERVER['REQUEST_URI'];
         <title><?php print $site_title; ?> | <?php print $site_name; ?></title>
 
         <meta name="description" content="<?php print $site_description; ?>" />
+
         <meta name="host" content="<?php print $site_data ;?>" />
+        <meta name="captcha" content="<?php print $captcha::generate(); ?>" />
 
         <link rel="canonical" type="text/css" href="<?php print $site_data; ?>" />
 

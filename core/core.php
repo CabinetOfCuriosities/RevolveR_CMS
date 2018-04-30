@@ -5,7 +5,8 @@ if( $_SERVER['REQUEST_URI'] === '/index.php' ) {
 	header('Location: '. site_host . '');
 }
 
-/* Connect Cipher Library */
+/* Connect Cipher & Captcha libraries */
+$captcha = new Captcha();
 $cipher = new Cipher();
 
 /* Read db config file */
@@ -138,7 +139,6 @@ $node = new Node();
 $vars = new Variables();
 
 $mail = new Mail();
-
 
 // render site
 if( $not_found &&  $_SERVER['REQUEST_URI'] !== '/' ) {
