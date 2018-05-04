@@ -247,6 +247,9 @@ function allowRender($route) {
 		if( $route[1] === 'categories' && $route[3] === 'edit' && $counter <= 0) { 
 			if(ACCESS === 'Admin') { 
 
+
+				unset( $dbx::$result['result'] );
+
 				$dbx::query('s|field_id|asc', 'revolver__categories', $STRUCT_CATEGORIES);
 
 				$total_cats = count($dbx::$result['result']);
