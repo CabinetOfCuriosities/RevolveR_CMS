@@ -11,66 +11,70 @@
 
 <?php 
 
-unset( $dbx::$result['result'] );
-$dbx::query('s|field_id|asc|5', 'revolver__categories', $STRUCT_CATEGORIES);
+if( INSTALLED ) {
 
-if( isset($dbx::$result['result']) ) {
+	unset( $dbx::$result['result'] );	
 
-	$cats = $dbx::$result['result'];
-	$render = "";
+	$dbx::query('s|field_id|asc|5', 'revolver__categories', $STRUCT_CATEGORIES);
 
-	foreach ($cats as $k => $v) {
+	if( isset($dbx::$result['result']) ) {
 
-		$render .= '<div class="revolver__sidebar-category-'. $v['field_id'] .'">';
-		$render .= '<h4>'. $v['field_title'] .'</h4>';
+		$cats = $dbx::$result['result'];
+		$render = "";
 
-		unset( $dbx::$result['result'] );
+		foreach ($cats as $k => $v) {
 
-		$dbx::query('s|field_id|asc|15', 'revolver__nodes', $STRUCT_NODES);
+			$render .= '<div class="revolver__sidebar-category-'. $v['field_id'] .'">';
+			$render .= '<h4>'. $v['field_title'] .'</h4>';
 
-		if(isset($dbx::$result['result'])) {
+			unset( $dbx::$result['result'] );
 
-			$pages = $dbx::$result['result'];
-			$render .= '<ul>';
+			$dbx::query('s|field_id|asc|15', 'revolver__nodes', $STRUCT_NODES);
 
-			foreach ($pages as $p => $val) {
-				if( $val['field_category'] === $v['field_id'] ) {
+			if(isset($dbx::$result['result'])) {
 
-					$render .= '<li><a href="'. $val['field_route'] .'">'. $val['field_title'] .'</a></li>';
+				$pages = $dbx::$result['result'];
+				$render .= '<ul>';
+
+				foreach ($pages as $p => $val) {
+					if( $val['field_category'] === $v['field_id'] ) {
+
+						$render .= '<li><a href="'. $val['field_route'] .'">'. $val['field_title'] .'</a></li>';
+					}
 				}
+
+				$render .= '</ul>';
 			}
 
-			$render .= '</ul>';
+			$render .= '</div>';
+		}
+	}
+
+	unset( $dbx::$result['result'] );
+	$dbx::query('s|field_id|asc|10', 'revolver__comments', $STRUCT_COMMENTS);
+
+	if( isset($dbx::$result['result']) ) {
+
+		$comments = $dbx::$result['result'];
+
+		$render .= '<div class="revolver__sidebar-comments">';
+		$render .= '<h4>Latest reviews</h4>';
+		$render .= '<ul>';
+
+		foreach ($comments as $c => $val) {
+
+			$comment = substr(strip_tags( $val['field_content'] ), 0, 50);
+			$comment = rtrim($comment, "!,.-");
+
+			$render .= '<li>#'. $val['field_id'] .' :: '. $comment .'<br /><span>by '. $val['field_user_name'] .'</span></li>';
+
 		}
 
-		$render .= '</div>';
-	}
-}
-
-unset( $dbx::$result['result'] );
-$dbx::query('s|field_id|asc|10', 'revolver__comments', $STRUCT_COMMENTS);
-
-if( isset($dbx::$result['result']) ) {
-
-	$comments = $dbx::$result['result'];
-
-	$render .= '<div class="revolver__sidebar-comments">';
-	$render .= '<h4>Latest reviews</h4>';
-	$render .= '<ul>';
-
-	foreach ($comments as $c => $val) {
-
-		$comment = substr(strip_tags( $val['field_content'] ), 0, 50);
-		$comment = rtrim($comment, "!,.-");
-
-		$render .= '<li>#'. $val['field_id'] .' :: '. $comment .'<br /><span>by '. $val['field_user_name'] .'</span></li>';
-
+		$render .= '</ul></div>';
 	}
 
-	$render .= '</ul></div>';
+	print $render;
 }
-
-print $render;
 
 ?>
 	
