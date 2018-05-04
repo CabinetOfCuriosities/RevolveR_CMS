@@ -95,6 +95,16 @@
 	// Live loading
     function fetchRouteLive() {
 
+		// animate logo
+		$.dom('.revolver__header h1 a', 'style', ['color: #dcdcdc', 'display:inline-block']);
+		$.dom('.revolver__main-menu ul li a', 'style', ['color: #dcdcdc', 'opacity:.1']);
+
+    	$.dom('.revolver__header h1 a', 'animate', ['color:#913dbd:1500', 'transform: scale(.5,.5,.5) rotate(360deg,360deg,360deg):1500:bounce']);
+    	$.dom('.revolver__header h1 a', 'animate', ['color:#913dbd:1500', 'transform: scale(1,1,1):2000:elastic']);
+
+    	$.dom('.revolver__main-menu ul li a ', 'animate', ['color:#8b69dc:2500', 'opacity:1:3500:bounce']);
+
+
 		$.fetch('/secure.php','GET','json', function(){ 
 			renderCaptcha( this.key );
 		}); 

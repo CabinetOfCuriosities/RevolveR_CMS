@@ -1,3 +1,21 @@
+@import '/app/font.css';
+
+/* RevolveR theme fonts */
+h1,
+h1 a {
+	font-family: 'BarkentinaRegular';
+}
+
+a {
+	font-family: 'NautilusPompiliusRegular';
+}
+
+p {
+	font-family: 'BarkentinaRegular';
+	font-size: 18px;
+}
+
+
 /* RevolveR :: core.css */
 body {
 	background: #dcdcdc;
@@ -48,14 +66,16 @@ body {
 
 .revolver__captcha #drawpane div {
 	width: 22px;
-	height: 20px;
+	height: 22px;
 	background: #90c4b8;
 	display: inline-block;
 	cursor: pointer;
-	margin-right: 1px;
+	margin-right: 2px;
 	margin-bottom: 1px;
+	transition: all .5s ease-in-out;
 }
 
+.revolver__captcha #drawpane div:hover,
 .revolver__captcha #drawpane .active {
 	background: #000;
 }
@@ -90,6 +110,8 @@ body {
 	.revolver__logo a {
 		text-decoration: none;
 		color: #913dbd;;
+		letter-spacing: 2px;
+		font-weight: 600;
 	}
 
 	/* RevolveR :: main menues styles */
@@ -127,6 +149,7 @@ body {
 	.revolver__main-menu ul li a {
 		text-decoration: none;
 		color: #8b69dc;
+		font-size: 18px;
 	}
 
 	.revolver__main-menu ul li a:hover {

@@ -1,0 +1,21 @@
+/* font.css */
+
+@font-face {
+	font-family: "NautilusPompiliusRegular";
+	src: url("/app/font/NautilusPompiliusRegular.eot");
+	src: url("/app/font/NautilusPompiliusRegular.eot?#iefix")format("embedded-opentype"),
+	url("/app/font/NautilusPompiliusRegular.woff") format("woff"),
+	url("/app/font/NautilusPompiliusRegular.ttf") format("truetype");
+	font-style: normal;
+	font-weight: normal;
+}
+
+@font-face {
+	font-family: "BarkentinaRegular";
+	src: url("/app/font/BarkentinaRegular.eot");
+	src: url("/app/font/BarkentinaRegular.eot?#iefix")format("embedded-opentype"),
+	url("/app/font/BarkentinaRegular.woff") format("woff"),
+	url("/app/font/BarkentinaRegular.ttf") format("truetype");
+	font-style: normal;
+	font-weight: normal;
+}
