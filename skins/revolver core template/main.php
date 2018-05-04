@@ -49,7 +49,20 @@ function allowRender($route) {
 				}
 
 				$render_node .= '</header>';
-				$render_node .= '<div class="revolver__article-contents">'. $n['contents'] .'</div>';
+
+				if( $_SERVER['REQUEST_URI'] === '/' ) {
+				
+					$body = substr(strip_tags( $n['contents'] ), 0, 700);
+					$body = rtrim($body, "!,.-");
+					
+					$render_node .= '<div class="revolver__article-contents">'. $body .'</div>';
+				
+				} 
+				else {
+
+					$render_node .= '<div class="revolver__article-contents">'. $n['contents'] .'</div>';
+				
+				}
 
 				if( $n['footer'] ) {
 				
@@ -100,7 +113,7 @@ function allowRender($route) {
 						$render_node .= '<div class="revolver__comments_add">';
 				 		$render_node .= '<form method="post" accept-charset="utf-8" />';
 					 	$render_node .= '<fieldset>';
-					 	$render_node .= '<legend>Add a review as: '. USER['name'] .'</legend>';
+					 	$render_node .= '<legend style="width:40%">Add a review as: '. USER['name'] .'</legend>';
 					 	$render_node .= '<label>Comment:';
 					 	$render_node .= '<textarea id="textarea" rows="5" name="revolver_comment_content" type="text" placeholder="Comment contents"></textarea>';
 					 	$render_node .= '<input type="hidden" name="revolver_node_id" value="'. preg_replace("/[^0-9]/", '', $n['id']) .'" />';

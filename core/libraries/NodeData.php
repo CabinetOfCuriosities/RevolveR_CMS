@@ -330,12 +330,9 @@ switch( ROUTE['node'] ) {
 
 													}
 
-													if( !isset($k['revolver_node_edit_delete']) ) {
+													if( isset($k['revolver_node_edit_delete']) ) {
 														$action = 'delete';
 													} 
-													else {
-														$action = 'update';
-													}
 
 													if(isset($k['revolver_captcha'])) {
 
@@ -348,7 +345,7 @@ switch( ROUTE['node'] ) {
 
 												}
 
-												if( $action === 'update' ) {
+												if( $action !== 'delete' ) {
 
 													if( (int)$node_id === (int)$node['field_id']) {
 
@@ -578,6 +575,7 @@ switch( ROUTE['node'] ) {
 			 	$contents .= '<label>Chose node category:';
 			 	$contents .= '&nbsp;&nbsp;<select name="revolver_node_edit_category">';
 
+			 	unset( $dbx::$result['result'] );
 		 		$dbx::query('s|field_id|asc', 'revolver__categories', $STRUCT_CATEGORIES);
 
 		 		if( isset( $dbx::$result['result'] ) ) {
@@ -968,7 +966,7 @@ switch( ROUTE['node'] ) {
 		 	$contents .= '<input type="submit" value="Submit" />';
 		 	$contents .= '</form>';
 
-			$version = 'v.0.3.0';
+			$version = 'v.0.9.1 delta';
 			$title    = 'RevolveR CMS '. $version .' Preferences';
 
 		}
@@ -1067,7 +1065,7 @@ switch( ROUTE['node'] ) {
 		}
 
 
-
+		unset($dbx::$result['result']);
 		$dbx::query('s|field_id|asc', 'revolver__categories', $STRUCT_CATEGORIES);
 
 		if( isset($dbx::$result['result']) ) {
@@ -1092,6 +1090,7 @@ switch( ROUTE['node'] ) {
 
 				$contents .= '<dd><p>'. $val['field_description'] .'</p>';
 
+				unset( $dbx::$result['result'] );
 				$dbx::query('s|field_id|asc', 'revolver__nodes', $STRUCT_NODES);
 
 				if( isset($dbx::$result['result']) ) {

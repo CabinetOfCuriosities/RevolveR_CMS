@@ -13,6 +13,7 @@ a {
 p {
 	font-family: 'BarkentinaRegular';
 	font-size: 18px;
+	letter-spacing: 1px;
 }
 
 
@@ -372,6 +373,89 @@ body {
 			color: #666;
 			text-shadow: -1px 1px 3px #fff;
 		}
+
+/* RevolveR :: Sidebar Left & Right */
+
+.revolver__main-contents {
+	display: inline-block;
+	float: left;
+	width: 80%;
+}
+
+.revolver__sidebar-right,
+.revolver__sidebar-left  {
+	display: inline-block;
+	float: right;
+	width: 18%;
+}
+
+.revolver__sidebar-left {
+	float: left;
+	transform: scale(.5);
+}
+
+
+	.revolver__sidebar-right div,
+	.revolver__sidebar-left div {
+		margin: 20px 0;
+		padding: 0 0 10px;
+		background: #dedede;
+		box-shadow: 0 0 10px #d1d1d1;
+		border: 1px dotted #cdcdcd;	
+		display: block;	
+		width: 93%;
+	}
+
+		.revolver__sidebar-right div h4,
+		.revolver__sidebar-left div h4 {
+			background: linear-gradient(to left, rgba(254,255,232,0) 0%,rgba(214,219,191,1) 100%);
+			padding: 8px 12px;
+			margin: 0;
+			color: #666;
+			font-family: BarkentinaRegular;
+			text-shadow: -1px 0px 2px #fff;
+			letter-spacing: 1px;
+		}
+
+		.revolver__sidebar-right div ul,
+		.revolver__sidebar-left div ul {
+			list-style: none;
+			padding: 10px 12px;
+		}
+
+		.revolver__sidebar-right div ul li,
+		.revolver__sidebar-left div ul li {
+			margin: 8px 0;
+			display: block;
+			overflow: hidden;
+			border-bottom: 1px dotted #c4c4c4;
+			padding: 0 0 5px;
+		}
+
+		.revolver__sidebar-right div ul li,
+		.revolver__sidebar-left div ul li,
+		.revolver__sidebar-right div ul li a,
+		.revolver__sidebar-left div ul li a {
+			font-size: 14px;
+			font-family: Verdana;
+			text-decoration: none;
+			color: #6f799a;
+		}
+
+		.revolver__sidebar-comments ul li {
+			font-size: 12px !important;
+		}
+
+		.revolver__sidebar-comments span {
+			display: inline-block;
+			float: right;
+			font-weight: bold;
+			font-size: 8px;
+			margin-top: 10px;
+			margin-bottom: 10px; 
+		}
+
+
 
 /* RevolveR :: Footer */
 .revolver__footer {

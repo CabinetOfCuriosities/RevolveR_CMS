@@ -21,8 +21,8 @@ $site_description = "Homepage index";
 
 /* Layout Config */
 $site_sidebars = [
-	'left' => false, 
-	'right' => true
+	'left' => true, 
+	'right' => false
 ];
 
 /* Main menu */

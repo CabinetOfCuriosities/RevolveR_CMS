@@ -8,7 +8,8 @@
 ?>
 <!-- RevolveR :: sidebar right -->
 <aside class="revolver__sidebar-right">
-	
+
+
 </aside>
 <!-- RevolveR :: #sidebar right -->
 <?php 
