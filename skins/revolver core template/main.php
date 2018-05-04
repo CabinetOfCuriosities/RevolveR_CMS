@@ -244,6 +244,78 @@ function allowRender($route) {
 		// Comments edit
 		$route = explode('/', $_SERVER['REQUEST_URI']);
 
+		if( $route[1] === 'categories' && $route[3] === 'edit' && $counter <= 0) { 
+			if(ACCESS === 'Admin') { 
+
+				$dbx::query('s|field_id|asc', 'revolver__categories', $STRUCT_CATEGORIES);
+
+				$total_cats = count($dbx::$result['result']);
+
+				foreach ($dbx::$result['result'] as $cat => $val) {
+
+					if( (int)$val['field_id'] === (int)$route[2] ) {
+
+					 	$render_node .= '<form method="post" accept-charset="utf-8" />';
+					 	$render_node .= '<fieldset>';
+					 	$render_node .= '<legend style="width: 40%">Add category:</legend>';
+					 	$render_node .= '<label>Category title:';
+					 	$render_node .= '<input name="revolver_category_title" type="text" value="'. $val['field_title'] .'" placeholder="Type category name" required />';
+					 	$render_node .= '</label>';
+					 	$render_node .= '<label>Category description:';
+					 	$render_node .= '<input name="revolver_category_description" type="text" value="'. $val['field_description'] .'" placeholder="Type category description" required />';
+					 	$render_node .= '<input type="hidden" name="revolver_category_edit" value="'. $val['field_id'] .'">';
+					 	$render_node .= '</label>';
+
+						if( $total_cats > 1 ) {
+							$render_node .= '<label>Delete category:';
+							$render_node .= '&nbsp;&nbsp;<input type="checkbox" name="revolver_category_action_delete" value="1" />';
+							$render_node .= '</label>';
+						}
+
+					 	$render_node .= '</fieldset>';
+						$render_node .= '<fieldset>';
+						$render_node .= '<legend style="width: 40%">Lets draw:</legend>';
+						$render_node .= '<!-- captcha -->';
+						$render_node .= '<div class="revolver__captcha"><div class="revolver__captcha-td">';
+						$render_node .= '<label>Pattern:<div class="revolver__captcha-pattern">';
+						$render_node .= '<canvas id="resultpane" width="101" height="101"></canvas>';
+						$render_node .= '</div></label>';
+						$render_node .= '<label>Your input:<div class="revolver__captcha-pattern">';
+						$render_node .= '<section id="drawpane">';
+						$render_node .= '<div id="pane-1-1" data-selected="false" data-xy="0:0"></div>';
+						$render_node .= '<div id="pane-1-2" data-selected="false" data-xy="25:0"></div>';
+						$render_node .= '<div id="pane-1-3" data-selected="false" data-xy="50:0"></div>';
+						$render_node .= '<div id="pane-1-4" data-selected="false" data-xy="75:0"></div>';
+						$render_node .= '<div id="pane-2-1" data-selected="false" data-xy="0:25"></div>';
+						$render_node .= '<div id="pane-2-2" data-selected="false" data-xy="25:25"></div>';
+						$render_node .= '<div id="pane-2-3" data-selected="false" data-xy="50:25"></div>';
+						$render_node .= '<div id="pane-2-4" data-selected="false" data-xy="75:25"></div>';
+						$render_node .= '<div id="pane-3-1" data-selected="false" data-xy="0:50"></div>';
+						$render_node .= '<div id="pane-3-2" data-selected="false" data-xy="25:50"></div>';
+						$render_node .= '<div id="pane-3-3" data-selected="false" data-xy="50:50"></div>';
+						$render_node .= '<div id="pane-3-4" data-selected="false" data-xy="75:50"></div>';
+						$render_node .= '<div id="pane-4-1" data-selected="false" data-xy="0:75"></div>';
+						$render_node .= '<div id="pane-4-2" data-selected="false" data-xy="25:75"></div>';
+						$render_node .= '<div id="pane-4-3" data-selected="false" data-xy="50:75"></div>';
+						$render_node .= '<div id="pane-4-4" data-selected="false" data-xy="75:75"></div>';
+						$render_node .= '</section>';
+						$render_node .= '</div></label>';
+						$render_node .= '</div></div>';
+						$render_node .= '<!-- #captcha -->';
+						$render_node .= '<input type="hidden" name="revolver_captcha" value="">';
+						$render_node .= '</fieldset>';
+					 	$render_node .= '<input type="submit" value="Submit" />';
+					 	$render_node .= '</form>';
+
+
+					}
+				}
+			}
+		}
+
+		// Comments edit
+		$route = explode('/', $_SERVER['REQUEST_URI']);
+
 		if( $route[1] === 'comment' && $route[3] === 'edit' && $counter <= 0) { 
 			if(ACCESS === 'Admin' || ACCESS === 'User') { 
 

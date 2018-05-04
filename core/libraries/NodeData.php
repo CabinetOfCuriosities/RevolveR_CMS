@@ -55,110 +55,179 @@ switch( ROUTE['node'] ) {
 								'category'	  => $node['field_category'],
 							];
 
-							if( count($vars::getVars()) > 0 ) {
+							if( ACCESS === 'Admin' ) {
+								if( count($vars::getVars()) > 0 ) {
 
-								$struct_1 = [];
-								$struct_2 = [];
-								$struct_3 = [];
-								$struct_4 = [];
-								$struct_5 = [];
+									$cat_struct_1 = [];
+									$cat_struct_2 = [];
+									$cat_struct_3 = [];
 
-								$advanced_action = 'update';
+									foreach ($vars::getVars() as $k) {
 
-								foreach ($vars::getVars() as $k) {
+										if( isset($k['revolver_category_title']) ) {
+											$cat_struct_1['field_title']['new_value'] = $safe::safe( $k['revolver_category_title'] );
+											$cat_struct_1['field_title']['criterion_field'] = 'field_id';
+										}
 
-									if( !empty( $k['revolver_comments_action_edit'] ) ) {
-										$action = 'edit';
+										if( isset($k['revolver_category_description']) ) {
+											$cat_struct_2['field_description']['new_value'] = $safe::safe( $k['revolver_category_description'] );
+											$cat_struct_2['field_description']['criterion_field'] = 'field_id';
+										}
 
-									} 
+										if( isset($k['revolver_category_edit']) ) {
+											// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
 
-									if(  !empty( $k['revolver_comments_action_delete'] ) ) {
-										$advanced_action = 'delete';
+											$cat_struct_1['field_id']['value'] = $k['revolver_category_edit'];
+											$cat_struct_2['field_id']['value'] = $k['revolver_category_edit'];
+
+											$cat_struct_1['field_title']['criterion_value'] = $k['revolver_category_edit'];
+											$cat_struct_2['field_description']['criterion_value'] = $k['revolver_category_edit'];
+
+										}
+
+										if(isset($k['revolver_captcha'])) {
+
+											$captcha_data = explode( '*' , $k['revolver_captcha'] );
+											if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+												define('form_pass', 'pass');
+											}
+
+										}
+
+										if( isset($k['revolver_category_action_delete']) ) {
+											$action = 'delete';
+										} 
+										else {
+											$action = 'update';
+										}				
+									
 									}
 
-									if( isset($k['revolver_comment_content']) ) {
-										$STRUCT_COMMENTS['field_content']['value'] = $k['revolver_comment_content'];
+									if( form_pass === 'pass' ) {
 
-										$struct_1['field_content']['new_value'] = $safe::safe( nl2br($k['revolver_comment_content']) );
-										$struct_1['field_content']['criterion_field'] = 'field_id';
-									}
+										if( $action === 'update' ) {
 
-									if( isset($k['revolver_comment_time']) ) {
-										$STRUCT_COMMENTS['field_time']['value'] = $k['revolver_comment_time'];
+											$dbx::query('u', 'revolver__categories', $cat_struct_1);
+											$dbx::query('u', 'revolver__categories', $cat_struct_2);
 
-										$struct_2['field_time']['new_value'] = $k['revolver_comment_time'];
-										$struct_2['field_time']['criterion_field'] = 'field_id';
-									}
+										} 
+										else {
 
-									if( isset($k['revolver_comment_user_id']) ) {
-										$STRUCT_COMMENTS['field_user_id']['value'] = $k['revolver_comment_user_id'];
-									}
+											$dbx::query('x', 'revolver__categories', $cat_struct_1);
+											header('Location: '. site_host .'/categories/');
 
-									if( isset($k['revolver_node_id']) ) {
-										$STRUCT_COMMENTS['field_node_id']['value'] = $k['revolver_node_id'];
-									}
-
-									if( isset($k['revolver_comment_user_name']) ) {
-										$STRUCT_COMMENTS['field_user_name']['value'] = $k['revolver_comment_user_name'];
-									}
-
-									if( isset($k['revolver_comment_id']) ) {
-
-										// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
-
-										$struct_1['field_id']['value'] = $k['revolver_comment_id'];
-										$struct_2['field_id']['value'] = $k['revolver_comment_id'];
-
-										$struct_1['field_content']['criterion_value'] = $k['revolver_comment_id'];
-										$struct_2['field_time']['criterion_value'] = $k['revolver_comment_id'];
-
-									}
-
-									if(isset($k['revolver_captcha'])) {
-
-										$captcha_data = explode( '*' , $k['revolver_captcha'] );
-										if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
-											define('form_pass', 'pass');
 										}
 
 									}
-
-
 								}
+							}
+
+							if( ACCESS === 'User' || ACCESS === 'Admin') {
+								if( count($vars::getVars()) > 0 ) {
+
+									$struct_1 = [];
+									$struct_2 = [];
+									$struct_3 = [];
+									$struct_4 = [];
+									$struct_5 = [];
+
+									$advanced_action = 'update';
+
+									foreach ($vars::getVars() as $k) {
+
+										if( !empty( $k['revolver_comments_action_edit'] ) ) {
+											$action = 'edit';
+
+										} 
+
+										if(  !empty( $k['revolver_comments_action_delete'] ) ) {
+											$advanced_action = 'delete';
+										}
+
+										if( isset($k['revolver_comment_content']) ) {
+											$STRUCT_COMMENTS['field_content']['value'] = $k['revolver_comment_content'];
+
+											$struct_1['field_content']['new_value'] = $safe::safe( nl2br($k['revolver_comment_content']) );
+											$struct_1['field_content']['criterion_field'] = 'field_id';
+										}
+
+										if( isset($k['revolver_comment_time']) ) {
+											$STRUCT_COMMENTS['field_time']['value'] = $k['revolver_comment_time'];
+
+											$struct_2['field_time']['new_value'] = $k['revolver_comment_time'];
+											$struct_2['field_time']['criterion_field'] = 'field_id';
+										}
+
+										if( isset($k['revolver_comment_user_id']) ) {
+											$STRUCT_COMMENTS['field_user_id']['value'] = $k['revolver_comment_user_id'];
+										}
+
+										if( isset($k['revolver_node_id']) ) {
+											$STRUCT_COMMENTS['field_node_id']['value'] = $k['revolver_node_id'];
+										}
+
+										if( isset($k['revolver_comment_user_name']) ) {
+											$STRUCT_COMMENTS['field_user_name']['value'] = $k['revolver_comment_user_name'];
+										}
+
+										if( isset($k['revolver_comment_id']) ) {
+
+											// TODO :: OPTIMIZE F*CKING DBX ENGINE [*]
+
+											$struct_1['field_id']['value'] = $k['revolver_comment_id'];
+											$struct_2['field_id']['value'] = $k['revolver_comment_id'];
+
+											$struct_1['field_content']['criterion_value'] = $k['revolver_comment_id'];
+											$struct_2['field_time']['criterion_value'] = $k['revolver_comment_id'];
+
+										}
+
+										if(isset($k['revolver_captcha'])) {
+
+											$captcha_data = explode( '*' , $k['revolver_captcha'] );
+											if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+												define('form_pass', 'pass');
+											}
+
+										}
 
 
-								if( $action === 'edit' ) {
+									}
 
-									if( $advanced_action === 'delete' && form_pass === 'pass' ) {
-					
-										$dbx::query('x', 'revolver__comments', $struct_1);
-										header('Location: '. site_host);
-									
+
+									if( $action === 'edit' ) {
+
+										if( $advanced_action === 'delete' && form_pass === 'pass' ) {
+						
+											$dbx::query('x', 'revolver__comments', $struct_1);
+											header('Location: '. site_host);
+										
+										} 
+										else {
+
+											if( form_pass === 'pass' ) {
+
+												$dbx::query('u', 'revolver__comments', $struct_1);
+												$dbx::query('u', 'revolver__comments', $struct_2);
+												$dbx::query('u', 'revolver__comments', $struct_5);
+											
+											}
+										
+										}
+
 									} 
 									else {
 
 										if( form_pass === 'pass' ) {
-
-											$dbx::query('u', 'revolver__comments', $struct_1);
-											$dbx::query('u', 'revolver__comments', $struct_2);
-											$dbx::query('u', 'revolver__comments', $struct_5);
-										
+											$STRUCT_COMMENTS['field_id']['value'] = 0;
+											if( $counter <= 0 ) {
+												$dbx::query('i', 'revolver__comments', $STRUCT_COMMENTS);	
+											}
 										}
-									
-									}
 
-								} 
-								else {
-
-									if( form_pass === 'pass' ) {
-										$STRUCT_COMMENTS['field_id']['value'] = 0;
-										if( $counter <= 0 ) {
-											$dbx::query('i', 'revolver__comments', $STRUCT_COMMENTS);	
-										}										
 									}
 
 								}
-
 							}
 
 							if( count(ROUTE) === 1 ) {
@@ -997,6 +1066,8 @@ switch( ROUTE['node'] ) {
 		 	$contents .= '</form>';
 		}
 
+
+
 		$dbx::query('s|field_id|asc', 'revolver__categories', $STRUCT_CATEGORIES);
 
 		if( isset($dbx::$result['result']) ) {
@@ -1006,7 +1077,19 @@ switch( ROUTE['node'] ) {
 			foreach ($dbx::$result['result'] as $cat => $val) {
 
 				
-				$contents .= '<dt>#' . $val['field_id'] . ' :: '.  $val['field_title'] .'</dt>';
+				
+				if( ACCESS === 'Admin') {
+				
+					$contents .= '<dt>#' . $val['field_id'] . ' :: '.  $val['field_title'] .'<a style="float:right" href="/categories/'. $val['field_id']  .'/edit/">Edit</a></dt>';
+				
+				} 
+				else {
+
+					$contents .= '<dt>#' . $val['field_id'] . ' :: '.  $val['field_title'] .'</dt>';
+				}
+				
+
+
 				$contents .= '<dd><p>'. $val['field_description'] .'</p>';
 
 				$dbx::query('s|field_id|asc', 'revolver__nodes', $STRUCT_NODES);
