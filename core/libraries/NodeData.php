@@ -677,6 +677,37 @@ switch( ROUTE['node'] ) {
 		 	$contents .= '<input name="revolver_setup_database_password" type="password" placeholder="Database password" value="root" />';
 		 	$contents .= '</label>';
 		 	$contents .= '</fieldset>';
+			$contents .= '<fieldset>';
+			$contents .= '<legend>Lets draw:</legend>';
+			$contents .= '<!-- captcha -->';
+			$contents .= '<div class="revolver__captcha"><div class="revolver__captcha-td">';
+			$contents .= '<label>Pattern:<div class="revolver__captcha-pattern">';
+			$contents .= '<canvas id="resultpane" width="101" height="101"></canvas>';
+			$contents .= '</div></label>';
+			$contents .= '<label>Your input:<div class="revolver__captcha-pattern">';
+			$contents .= '<section id="drawpane">';
+			$contents .= '<div id="pane-1-1" data-selected="false" data-xy="0:0"></div>';
+			$contents .= '<div id="pane-1-2" data-selected="false" data-xy="25:0"></div>';
+			$contents .= '<div id="pane-1-3" data-selected="false" data-xy="50:0"></div>';
+			$contents .= '<div id="pane-1-4" data-selected="false" data-xy="75:0"></div>';
+			$contents .= '<div id="pane-2-1" data-selected="false" data-xy="0:25"></div>';
+			$contents .= '<div id="pane-2-2" data-selected="false" data-xy="25:25"></div>';
+			$contents .= '<div id="pane-2-3" data-selected="false" data-xy="50:25"></div>';
+			$contents .= '<div id="pane-2-4" data-selected="false" data-xy="75:25"></div>';
+			$contents .= '<div id="pane-3-1" data-selected="false" data-xy="0:50"></div>';
+			$contents .= '<div id="pane-3-2" data-selected="false" data-xy="25:50"></div>';
+			$contents .= '<div id="pane-3-3" data-selected="false" data-xy="50:50"></div>';
+			$contents .= '<div id="pane-3-4" data-selected="false" data-xy="75:50"></div>';
+			$contents .= '<div id="pane-4-1" data-selected="false" data-xy="0:75"></div>';
+			$contents .= '<div id="pane-4-2" data-selected="false" data-xy="25:75"></div>';
+			$contents .= '<div id="pane-4-3" data-selected="false" data-xy="50:75"></div>';
+			$contents .= '<div id="pane-4-4" data-selected="false" data-xy="75:75"></div>';
+			$contents .= '</section>';
+			$contents .= '</div></label>';
+			$contents .= '</div></div>';
+			$contents .= '<!-- #captcha -->';
+			$contents .= '<input type="hidden" name="revolver_captcha" value="">';
+			$contents .= '</fieldset>';
 		 	$contents .= '<input type="submit" value="Submit" /><input type="reset" />';
 		 	$contents .= '</form>';
 
@@ -741,6 +772,15 @@ switch( ROUTE['node'] ) {
 					$dbx_data[2] = $k['revolver_setup_database_password'];
 				}
 
+				if(isset($k['revolver_captcha'])) {
+
+					$captcha_data = explode( '*' , $k['revolver_captcha'] );
+					if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+						define('form_pass', 'pass');
+					}
+
+				}
+
 			}
 
 			// Form Passed
@@ -752,7 +792,7 @@ switch( ROUTE['node'] ) {
 
 			if( strlen($user_data_name) >= 4 && strlen($user_data_email) > 0 && strlen($user_data_password) > 5 && strlen($user_data_password_confirm) > 5 ) {
 				if( $user_data_password === $user_data_password_confirm ) {
-					$passed = true;
+						$passed = true;	
 				}
 			} 
 			else {
@@ -772,7 +812,7 @@ switch( ROUTE['node'] ) {
 
 
 			// redirect to done page
-			if( $passed ) {
+			if( $passed && form_pass === 'pass' ) {
 
 				// create key
 				file_put_contents($_SERVER["DOCUMENT_ROOT"] .'/private/key.ini', uniqid());
@@ -829,6 +869,8 @@ switch( ROUTE['node'] ) {
 					$STRUCT_SITE['field_site_description']['value'] = 'Revolver CMS homepage';
 					
 					$STRUCT_SITE['field_site_skin']['value'] = 'revolver core template';
+					$STRUCT_SITE['field_site_sidebar_left']['value'] = 1;
+					$STRUCT_SITE['field_site_sidebar_right']['value'] = 0;
 
 					$dbx::query('i', 'revolver__settings', $STRUCT_SITE);
 
@@ -875,7 +917,6 @@ switch( ROUTE['node'] ) {
 
 		unset( $dbx::$result['result'] );
 
-
 		if( count($vars::getVars()) > 0 ) {		
 			foreach ($vars::getVars() as $k) {
 
@@ -895,27 +936,47 @@ switch( ROUTE['node'] ) {
 					$active_skin = $k['revolver_site_settings_skin'];
 				}
 
+				if( !empty($k['revolver_site_settings_sidebar_left']) ) {
+				
+					define(left_side , 'true');
+				
+				} 
+
+				if( !empty($k['revolver_site_settings_sidebar_right']) ) {
+				
+					define(right_side, 'true');
+				
+				} 
 			}
+
 
 			$STRUCT_SITE_1['field_site_brand']['new_value'] = $logotype;
 			$STRUCT_SITE_2['field_site_title']['new_value'] = $homepage_title;
 			$STRUCT_SITE_3['field_site_description']['new_value'] = $homepage_description;
 			$STRUCT_SITE_4['field_site_skin']['new_value'] = $active_skin;
+			$STRUCT_SITE_5['field_site_sidebar_left']['new_value'] = left_side === 'true' ? 1 : 0;
+			$STRUCT_SITE_6['field_site_sidebar_right']['new_value'] = right_side === 'true' ? 1 : 0;
 
 			$STRUCT_SITE_1['field_site_brand']['criterion_field'] = 'field_id';
 			$STRUCT_SITE_2['field_site_title']['criterion_field'] = 'field_id';
 			$STRUCT_SITE_3['field_site_description']['criterion_field'] = 'field_id';
 			$STRUCT_SITE_4['field_site_skin']['criterion_field'] = 'field_id';
+			$STRUCT_SITE_5['field_site_sidebar_left']['criterion_field'] = 'field_id';
+			$STRUCT_SITE_6['field_site_sidebar_right']['criterion_field'] = 'field_id';
 
 			$STRUCT_SITE_1['field_site_brand']['criterion_value'] = 1;
 			$STRUCT_SITE_2['field_site_title']['criterion_value'] = 1;
 			$STRUCT_SITE_3['field_site_description']['criterion_value'] = 1;
 			$STRUCT_SITE_4['field_site_skin']['criterion_value'] = 1;
+			$STRUCT_SITE_5['field_site_sidebar_left']['criterion_value'] = 1;
+			$STRUCT_SITE_6['field_site_sidebar_right']['criterion_value'] = 1;
 
 			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_1);
 			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_2);
 			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_3);
 			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_4);
+			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_5);
+			$dbx::query('u', 'revolver__settings', $STRUCT_SITE_6);
 			
 		}
 
@@ -961,12 +1022,42 @@ switch( ROUTE['node'] ) {
 				}
 			}
 		 				
-			$contents .= '</select>';
+			$contents .= '</select></label>';
+			$contents .= '<label>Left sidebar render:&nbsp;&nbsp;';
+
+			if( (int)$v['field_site_sidebar_left'] === 1 ) {
+
+				$contents .= '<input type="checkbox" name="revolver_site_settings_sidebar_left" checked />';
+
+			} 
+			else {
+
+				$contents .= '<input type="checkbox" name="revolver_site_settings_sidebar_left" />';
+
+			}
+
+			$contents .= '</label>';
+
+			$contents .= '<label>Right sidebar render:&nbsp;&nbsp;';
+
+			if( (int)$v['field_site_sidebar_right'] === 1 ) {
+
+				$contents .= '<input type="checkbox" name="revolver_site_settings_sidebar_right" checked />';
+
+			} 
+			else {
+
+				$contents .= '<input type="checkbox" name="revolver_site_settings_sidebar_right"/>';
+
+			}
+
+			$contents .= '</label>';
+
 		 	$contents .= '</fieldset>';		 	
 		 	$contents .= '<input type="submit" value="Submit" />';
 		 	$contents .= '</form>';
 
-			$version = 'v.0.9.1 delta';
+			$version = 'v.1.0.0 production';
 			$title    = 'RevolveR CMS '. $version .' Preferences';
 
 		}

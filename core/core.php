@@ -110,6 +110,14 @@ if( strlen($dbConfig) > 0 ) {
 					define('SKIN', $v['field_site_skin']);
 				}
 
+				if( !empty($v['field_site_sidebar_left'])) {
+					define('SKIN_LEFT', $v['field_site_sidebar_left']);
+				}
+
+				if( !empty($v['field_site_sidebar_right'])) {
+					define('SKIN_RIGHT', $v['field_site_sidebar_right']);
+				}
+
 			}
 		}
 

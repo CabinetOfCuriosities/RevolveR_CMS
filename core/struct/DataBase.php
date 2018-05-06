@@ -39,6 +39,16 @@ $STRUCT_SITE = [
 		'length' => 50,
 		'fill'   => true
 	],
+	'field_site_sidebar_left' => [
+		'type'	 => 'num',
+		'length' => 1,
+		'fill'   => true
+	],
+	'field_site_sidebar_right' => [
+		'type'	 => 'num',
+		'length' => 1,
+		'fill'   => true
+	]
 ];
 
 $STRUCT_CATEGORIES = [

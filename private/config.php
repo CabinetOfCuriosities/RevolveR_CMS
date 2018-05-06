@@ -19,12 +19,6 @@ $site_title = "Homepage";  // homepage title
 //site description
 $site_description = "Homepage index";
 
-/* Layout Config */
-$site_sidebars = [
-	'left' => true, 
-	'right' => false
-];
-
 /* Main menu */
 define('main_nodes', [
 	'home' => [

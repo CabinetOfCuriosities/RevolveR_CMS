@@ -18,14 +18,14 @@
 
             <?php include('header.php'); ?>
            
-            <?php if(isset($site_sidebars['left'])) {
-                if( $site_sidebars['left'] ) include('sidebar-left.php');
+            <?php if( SKIN_LEFT === '1' ) {
+                include('sidebar-left.php');
             } ?>
 
             <?php include('main.php'); ?>
 
-            <?php if(isset($site_sidebars['right'])) {
-                if( $site_sidebars['right'] ) include('sidebar-right.php');
+            <?php if( SKIN_RIGHT === '1' ) {
+                include('sidebar-right.php');
             } ?>
 
             <?php include('footer.php'); ?>
