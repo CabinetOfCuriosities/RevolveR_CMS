@@ -7,7 +7,7 @@
 
 ?>
 <!-- RevolveR :: sidebar left -->
-<aside class="revolver__sidebar-left">
+<aside itemscope itemtype="http://schema.org/WPSideBar" class="revolver__sidebar-left">
 
 <?php 
 
@@ -25,7 +25,7 @@ if( INSTALLED ) {
 		foreach ($cats as $k => $v) {
 
 			$render .= '<div class="revolver__sidebar-category-'. $v['field_id'] .'">';
-			$render .= '<h4>'. $v['field_title'] .'</h4>';
+			$render .= '<h4 itemprop="name">'. $v['field_title'] .'</h4>';
 
 			unset( $dbx::$result['result'] );
 
@@ -58,7 +58,7 @@ if( INSTALLED ) {
 		$comments = $dbx::$result['result'];
 
 		$render .= '<div class="revolver__sidebar-comments">';
-		$render .= '<h4>Latest reviews</h4>';
+		$render .= '<h4 itemprop="name">Latest reviews</h4>';
 		$render .= '<ul>';
 
 		foreach ($comments as $c => $val) {

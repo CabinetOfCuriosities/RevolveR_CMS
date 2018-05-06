@@ -10,10 +10,11 @@
 <html>
     <!-- RevolveR :: head -->
     <?php include('head.php'); ?><!-- RevolveR:: #head-->
-    <body>
+    
+    <body itemscope itemtype="http://schema.org/WebPage">
 
         <!-- RevolveR :: root -->
-        <main id="RevolverRoot">
+        <main id="RevolverRoot" itemscope itemprop="mainContentOfPage">
 
             <?php include('header.php'); ?>
            

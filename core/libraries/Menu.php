@@ -77,7 +77,7 @@ class Menu {
 				}
 			
 				if( (int)$val['param_check']['auth'] === (int)$_COOKIE['authorization'] || !isset( $val['param_check']['auth']) ) {
-					$output .= self::wrap('<a '. $attr .'>'. $link .'</a>', [$list_item_wrap, $wrp_class]);
+					$output .= self::wrap('<a itemprop="url" '. $attr .'>'. $link .'</a>', [$list_item_wrap, $wrp_class]);
 				}
 
 			}
@@ -94,7 +94,7 @@ class Menu {
 	}
 
 	public static function attr($a, $v) {
-		return $a .'="'. $v .'"';
+		return $a .'="'. $v .'" ';
 	}
 
 	public static function wrap($str, $wrp) {

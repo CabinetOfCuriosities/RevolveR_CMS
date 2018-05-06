@@ -391,7 +391,6 @@ body {
 
 .revolver__sidebar-left {
 	float: left;
-	transform: scale(.5);
 }
 
 
@@ -421,15 +420,28 @@ body {
 		.revolver__sidebar-left div ul {
 			list-style: none;
 			padding: 10px 12px;
+			list-style: square;
 		}
 
 		.revolver__sidebar-right div ul li,
 		.revolver__sidebar-left div ul li {
 			margin: 8px 0;
-			display: block;
+			display: inline-block;
 			overflow: hidden;
 			border-bottom: 1px dotted #c4c4c4;
 			padding: 0 0 5px;
+			height: 15px;
+		}
+
+		.revolver__sidebar-right div ul li a:after,
+		.revolver__sidebar-left div ul li a:after {
+			content: '...';
+			display: inline-block;
+			position: absolute;
+			top: 0;
+			left: 148px;
+			color: #000;
+			z-index: 1000;
 		}
 
 		.revolver__sidebar-right div ul li,
@@ -440,10 +452,13 @@ body {
 			font-family: Verdana;
 			text-decoration: none;
 			color: #6f799a;
+			position: relative;
 		}
 
 		.revolver__sidebar-comments ul li {
 			font-size: 12px !important;
+			height: 100% !important;
+			width: 100% !important;
 		}
 
 		.revolver__sidebar-comments span {

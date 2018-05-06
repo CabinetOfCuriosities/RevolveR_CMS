@@ -107,7 +107,7 @@
     	$.dom('.revolver__main-contents', 'style', ['opacity: .5', 'display: inline-block']);
     	$.dom('.revolver__main-contents', 'animate', ['opacity:1:1000:elastic', 'transform:scale(.5,.5,.5):500:bounce', 'transform:scale(1,1,1):1500:elastic']);
 
-    	$.dom('.revolver__sidebar-left', 'animate', ['transform:rotate(0deg, 360deg, 0deg):2000:elastic']);
+    	//$.dom('.revolver__sidebar-left', 'animate', ['transform:rotate(0deg, 360deg, 0deg):2000:elastic']);
 
 
 		$.fetch('/secure.php','GET','json', function(){ 
@@ -206,7 +206,10 @@
 					}
 				}
 
+				console.log( route );
+
 				$.insert($.dom('#RevolverRoot'), shell);
+
 				
 				$.location(title, route);
 				

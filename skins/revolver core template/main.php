@@ -34,33 +34,36 @@ function allowRender($route) {
 					$n['time'] = date('d/m/Y');
 				}
 
-				$render_node .= '<article class="revolver__article article-id-'. $n['id'] .'">';
+				$render_node .= '<article itemscope itemtype="http://schema.org/Article" class="revolver__article article-id-'. $n['id'] .'">';
 				$render_node .= '<header class="revolver__article-header">'; 
 				
 				if( $n['teaser'] ) {
-					$render_node .= '<h1><a href="'. $n['route'].'" rel="bookmark">'. $n['title'] .'</a></h1>';
+					$render_node .= '<h1 itemprop="name"><a href="'. $n['route'].'" rel="bookmark">'. $n['title'] .'</a></h1>';
 				} 
 				else {
-					$render_node .= '<h1>'. $n['title'] .'</h1>';
+					$render_node .= '<h1 itemprop="name">'. $n['title'] .'</h1>';
 				}
 
 				if( $n['time'] ) {
-					$render_node .= '<time>'. $n['time'] .'</time>';
+
+					$date = explode('/', $n['time']);
+
+					$render_node .= '<time datetime="'. $date[2] .'-'. $date[1] .'-'. $date[0] .'">'. $n['time'] .'</time>';
 				}
 
 				$render_node .= '</header>';
 
 				if( $_SERVER['REQUEST_URI'] === '/' ) {
 				
-					$body = substr(strip_tags( $n['contents'] ), 0, 700);
+					$body = substr($n['contents'], 0, 700);
 					$body = rtrim($body, "!,.-");
 					
-					$render_node .= '<div class="revolver__article-contents">'. $body .'</div>';
+					$render_node .= '<div itemprop="articleBody" class="revolver__article-contents">'. $body .' ...</div>';
 				
 				} 
 				else {
 
-					$render_node .= '<div class="revolver__article-contents">'. $n['contents'] .'</div>';
+					$render_node .= '<div itemprop="articleBody" class="revolver__article-contents">'. $n['contents'] .'</div>';
 				
 				}
 
@@ -76,7 +79,7 @@ function allowRender($route) {
 						$render_node .= '<li><a title="'. $n['title'] .'" href="'. $n['route'] .'">Read More</a></li>';
 					}
 
-					$render_node .= '</nav></footer>';
+					$render_node .= '</ul></nav></footer>';
 
 				}
 
@@ -89,12 +92,12 @@ function allowRender($route) {
 				
 					// comments show
 					foreach( $node_comments as $c ) {
-						$render_node .= '<article id="'. $c['comment_id'] .'" class="revolver__comments comments-'. $c['comment_id'] .'">';
+						$render_node .= '<article itemprop="comment" itemscope itemtype="http://schema.org/UserComments" id="'. $c['comment_id'] .'" class="revolver__comments comments-'. $c['comment_id'] .'">';
 						$render_node .= '<header class="revolver__comments-header">'; 
-						$render_node .= '<h2><a href="#'. $c['comment_id'] .'">#'. $c['comment_id'] .'</a> by '. $c['comment_user_name'] .'</h2>';
+						$render_node .= '<h2 itemprop="creator" itemscope itemtype="http://schema.org/Person"><a href="#'. $c['comment_id'] .'">#'. $c['comment_id'] .'</a> by <span itemprop="name">'. $c['comment_user_name'] .'</span></h2>';
 						$render_node .= '<time>'. $c['comment_time'] .'</time>';
 						$render_node .= '</header>';
-						$render_node .= '<div class="revolver__comments-contents">'. $c['comment_contents'] .'</div>';
+						$render_node .= '<div itemprop="commentText" class="revolver__comments-contents">'. $c['comment_contents'] .'</div>';
 						
 						if( $n['editor'] ) {
 							$render_node .= '<footer class="revolver__comments-footer"><nav><ul>';

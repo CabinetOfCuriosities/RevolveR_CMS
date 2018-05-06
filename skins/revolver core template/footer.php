@@ -8,9 +8,9 @@
 ?>
 
 <!-- RevolveR :: fotter -->
-<fotter class="revolver__footer">
+<footer itemscope itemtype="http://schema.org/WPFooter" class="revolver__footer">
 	
-	<p><?php print $site_title; ?> &copy; <?php print date('Y'); ?> | RevolveR CMS</p>
+	<p><?php print $site_title; ?> &copy;  <span itemprop="copyrightYear"><?php print date('Y'); ?></span> | RevolveR CMS</p>
 
 	<?php include('main-menu.php'); ?>
 
