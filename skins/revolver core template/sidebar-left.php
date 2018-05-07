@@ -63,7 +63,7 @@ if( INSTALLED ) {
 
 		foreach ($comments as $c => $val) {
 
-			$comment = substr(strip_tags( $val['field_content'] ), 0, 50);
+			$comment = substr(strip_tags( html_entity_decode(htmlspecialchars_decode( $val['field_content'] ) ) ), 0, 50);
 			$comment = rtrim($comment, "!,.-");
 
 			$render .= '<li>#'. $val['field_id'] .' :: '. $comment .'<br /><span>by '. $val['field_user_name'] .'</span></li>';
