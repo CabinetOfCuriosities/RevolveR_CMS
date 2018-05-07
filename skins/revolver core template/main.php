@@ -97,6 +97,22 @@ function allowRender($route) {
 						$render_node .= '<h2 itemprop="creator" itemscope itemtype="http://schema.org/Person"><a href="#'. $c['comment_id'] .'">#'. $c['comment_id'] .'</a> by <span itemprop="name">'. $c['comment_user_name'] .'</span></h2>';
 						$render_node .= '<time>'. $c['comment_time'] .'</time>';
 						$render_node .= '</header>';
+						$render_node .= '<figure class="revolver__comments-avatar">';
+					
+						if( $c['comment_user_avatar'] === 'default') {
+
+							$src = '/public/avatars/default.png';
+
+						} 
+						else {
+
+							$src = '/'. $c['comment_user_avatar'];
+							
+						}
+						
+						$render_node .= '<img src="'. $src .'" alt="'. $c['comment_user_name'] .'" />';
+						$render_node .= '</figure>';
+
 						$render_node .= '<div itemprop="commentText" class="revolver__comments-contents">'. $c['comment_contents'] .'</div>';
 						
 						if( $n['editor'] ) {

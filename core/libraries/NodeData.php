@@ -238,18 +238,38 @@ switch( ROUTE['node'] ) {
 								$dbx::query('s', 'revolver__comments', $STRUCT_COMMENTS);
 
 								if( isset( $dbx::$result['result'] ) ) {
-									foreach($dbx::$result['result'] as $comment => $c) {
+
+									$comments_data = $dbx::$result['result'];
+
+									unset( $dbx::$result['result'] );
+									
+									$dbx::query( 's|field_id|asc', 'revolver__users', $STRUCT_USER );
+
+									$user_data = $dbx::$result['result'];
+
+									foreach($comments_data as $comment => $c) {
 
 										if( $c['field_node_id'] === NODE_ID) {
-											$node_comments[] = [
-												'comment_id' => $c['field_id'],
-												'comment_uid' => $c['field_user_id'],
-												'comment_time' => $c['field_time'],
-												'comment_contents' => $safe::safe(html_entity_decode(htmlspecialchars_decode($c['field_content']))),
-												'comment_user_name' => $c['field_user_name'],
-											];
+
+											foreach ($user_data as $u => $us) {	
+												if( $us['field_nickname'] === $c['field_user_name'] ) {
+
+													$node_comments[] = [
+														'comment_id' => $c['field_id'],
+														'comment_uid' => $c['field_user_id'],
+														'comment_time' => $c['field_time'],
+														'comment_contents' => $safe::safe(html_entity_decode(htmlspecialchars_decode($c['field_content']))),
+														'comment_user_name' => $c['field_user_name'],
+														'comment_user_avatar' => $us['field_avatar'],
+													];
+
+												}
+											}
+
 										}
 									}
+
+
 								}
 
 
@@ -829,10 +849,14 @@ switch( ROUTE['node'] ) {
 					$dbx_data = explode('|', $cipher::crypt('decrypt', $dbTest));
 					$dbx = new DBX($dbx_data);
 
+					// create files
+					$dbx::query('c', 'revolver__files', $STRUCT_FILES);
+
 					$STRUCT_USER['field_nickname']['value'] = $user_data_name;
 					$STRUCT_USER['field_email']['value'] = $user_data_email;
 					$STRUCT_USER['field_password']['value'] = $cipher::crypt('encrypt', $user_data_password_confirm);
 					$STRUCT_USER['field_permissions']['value'] = 'Admin';
+					$STRUCT_USER['field_avatar']['value'] = 'default';
 
 					// create nodes
 					$dbx::query('c', 'revolver__nodes', $STRUCT_NODES);
@@ -1310,6 +1334,7 @@ switch( ROUTE['node'] ) {
 						$user_email = $user['field_email'];
 						$user_id    = $user['field_id'];
 						$user_permissions = $user['field_permissions'];
+						$avatar = $user['field_avatar'];
 					}
 				} 
 
@@ -1317,9 +1342,110 @@ switch( ROUTE['node'] ) {
 
 			$title = 'User profile #'. $user_id;
 			
-			$contents = '<p>User Name: <i>'. $user_name .'</i></p>';
+			$contents .= '<figure class="revolver__user-profile-avatar">';
+
+
+			if( $avatar === 'default') {
+			
+				$contents .= '<img src="/public/avatars/default.png" alt="'. $user_name .'" />';
+			
+			} 
+			else {
+
+				$contents .= '<img src="/'. $avatar .'" alt="'. $user_name .'" />';
+			}
+
+
+			$contents .= '<figcaption>';
+			$contents .= '<p>User Name: <i>'. $user_name .'</i></p>';
 			$contents .= '<p>User Email: <i>'. $user_email  .'</i></p>';
 			$contents .= '<p>Permissions: <i>'. $user_permissions  .'</i></p>';
+			$contents .= '</figcaption>';
+			$contents .= '</figure>';
+
+			$upload_allow = true;
+
+			$struct_1 = [];
+			$struct_2 = [];
+
+			if( count($vars::getVars()) > 0 ) { 
+				foreach ($vars::getVars() as $k) { 
+
+					if(isset($k['revolver_user_name'])) {
+						$name = $k['revolver_user_name'];
+					} 
+
+					if( isset($k['revolver_user_avatar']) ) {
+						$ava = $k['revolver_user_avatar'];
+					}
+
+					if( !empty($_FILES) ) {
+
+						$avatar_field = basename($_FILES['revolver_user_avatar-0']['name']);
+
+						$upload = 'public/avatars/' . $avatar_field;
+
+						$tmp_upload = $_FILES['revolver_user_avatar-0']['tmp_name'];
+
+						$imageFileType = strtolower(pathinfo($upload, PATHINFO_EXTENSION));
+
+						if (file_exists($target_file)) {
+							$upload_allow = false;
+						}
+
+						// Allow certain file formats
+						if($imageFileType !== "jpg" && $imageFileType !== "png" && $imageFileType !== "jpeg" && $imageFileType !== "gif") {
+							$upload_allow = false;
+
+						}
+
+					}
+
+					if(isset($k['revolver_captcha'])) {
+
+						$captcha_data = explode( '*' , $k['revolver_captcha'] );
+						if( $captcha::check($captcha_data[1], $captcha_data[0]) ) {
+							define('form_pass', 'pass');
+						}
+
+					} 
+			
+				}
+			}
+
+			//if( form_pass === 'pass' ) {
+
+				if( $upload_allow ) {
+					move_uploaded_file( $tmp_upload, $upload );
+
+					$struct_2['field_avatar']['new_value'] = $upload;
+					$struct_2['field_avatar']['criterion_field'] = 'field_id';
+					$struct_2['field_avatar']['criterion_value'] = $user_id;
+
+					$dbx::query('u', 'revolver__users', $struct_2);					
+				}
+
+				$struct_1['field_nickname']['new_value'] = $name;
+				$struct_1['field_nickname']['criterion_field'] = 'field_id';
+				$struct_1['field_nickname']['criterion_value'] = $user_id;
+
+				$dbx::query('u', 'revolver__users', $struct_1);
+
+			//}
+
+
+			$contents .= '<form method="POST">';
+			$contents .= '<fieldset>';
+			$contents .= '<legend>Edit account details</legend>';
+			$contents .= '<label>Account nickname';
+			$contents .= '<input type="text" name="revolver_user_name" value="'. $user_name .'" placeholder="Type your nickname here" required />';
+			$contents .= '</label>';
+			$contents .= '<label>Account avatar';
+			$contents .= '<input type="file" name="revolver_user_avatar" value="'. $avatar .'" placeholder="Type your nickname here" />';
+			$contents .= '</label>';
+			$contents .= '</fieldset>';
+			$contents .= '<input type="submit" value="Update" />';
+			$contents .= '</form>';
 
 		}
 
@@ -1364,7 +1490,7 @@ switch( ROUTE['node'] ) {
 								$auth::login($token);
 								header('Location: '. site_host . '/');
 
-							}					
+							}
 						}
 					} 
 				}

@@ -4,7 +4,7 @@
  **
  ** Revolver :: JavaScript library with modules architecture
  **
- ** ......................................... v.1.0.8( ES 7 )
+ ** ........................................ v.1.0.9( ES 7 );
  **
  ** Revolver JS is a fast, simple and powerfull solution for 
  ** front-end developers without any third party components.
@@ -29,7 +29,7 @@ const RR = {
 	// browser detection helper
 	browser: (mode) => {
 		
-		RR.appVer  = '1.0.8';
+		RR.appVer  = '1.0.9';
 		RR.isM     = /(Android|BackBerry|phone|iPad|iPod|IEMobile|Nokia|Mobile)/.test(navigator.userAgent);
 		RR.isTouch = !!('ontouchstart' in self);
  
@@ -280,7 +280,7 @@ const RR = {
 			let action = document.location.href + RR.attr(f, 'action');
 			let method = RR.attr('form', 'method')[0].toUpperCase();
 
-			let formInputs = RR.dom("form input[type='text'], form input[type='hidden'], form input[type='email'], form input[type='number'], form input[type='password'], form input[type='date'], form input[type='time'], form input[type='tel'], form input[type='url']"); 
+			let formInputs = RR.dom("form input[type='text'], form input[type='file'], form input[type='hidden'], form input[type='email'], form input[type='number'], form input[type='password'], form input[type='date'], form input[type='time'], form input[type='tel'], form input[type='url']"); 
 			let formRadiosCheckboxes = RR.dom("form input[type='radio'], form input[type='checkbox']");
 			let formTextareas = RR.dom("form textarea");
 			let formSelect = RR.dom('form select');
@@ -290,7 +290,19 @@ const RR = {
 		
 			// text and other formats
 			for(let j in formInputs) { 
-				data.append( formInputs[j].name, formInputs[j].value ); 
+
+				if (formInputs[j].type === 'file') {
+
+					for( let k in formInputs[j].files) {
+						data.append(formInputs[j].name +'-'+ k, formInputs[j].files[k]);
+					}
+
+				} 
+				else {
+
+					data.append( formInputs[j].name, formInputs[j].value ); 
+				
+				}
 			}
 
 			// multi string long text
@@ -339,6 +351,38 @@ const RR = {
 			});
 
 		});
+
+	},
+
+	// fetch upload
+	fetchUpload: function() {
+
+		// Select your input type file and store it in a variable
+		const input = document.getElementById('fileinput');
+
+		// This will upload the file after having read it
+		const upload = (file) => {
+		  fetch('http://www.example.net', { // Your POST endpoint
+		    method: 'POST',
+		    headers: {
+		      "Content-Type": "You will perhaps need to define a content-type here"
+		    },
+		    body: file // This is your file object
+		  }).then(
+		    response => response.json() // if the response is a JSON object
+		  ).then(
+		    success => console.log(success) // Handle the success response object
+		  ).catch(
+		    error => console.log(error) // Handle the error response object
+		  );
+		};
+
+		// Event handler executed when a file is selected
+		const onSelectFile = () => upload(input.files[0]);
+
+		// Add a listener on your input
+		// It will be triggered when a file will be selected
+		input.addEventListener('change', onSelectFile, false);		
 
 	},
 
